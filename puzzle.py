@@ -12,13 +12,12 @@ class Puzzle(object):
 
         self.current_state = np.copy(current_state)
 
-
-
         # return tuple (y, x)
         self.zero_index = np.argwhere(self.current_state == 0)[0]
 
         self.solution_string = ""
-        self.current_direction = ""
+        self.current_direction = ''
+        self.previous_direction = ''
         self.depth = 0 
 
 
@@ -37,6 +36,18 @@ class Puzzle(object):
             return False
         if self.zero_index[1] == self.puzzle_width - 1 and direction == 'r':
             return False
+        return True
+
+
+    def check_if_not_reversed(self, direction):
+        if self.previous_direction == 'u' and direction == 'd':
+            return False
+        if self.previous_direction == 'd' and direction == 'u':
+            return False
+        if self.previous_direction == 'l' and direction == 'r':
+            return False
+        if self.previous_direction == 'r' and direction == 'l':
+            return False    
         return True
 
 
@@ -66,6 +77,7 @@ class Puzzle(object):
         self.zero_index[1] += 1 
         self.solution_string += "r"
         self.depth += 1
+
 
     def make_move(self,direction):
         switch_by_direction = {

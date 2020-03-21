@@ -67,7 +67,7 @@ def choose_method(method, order, initial_state):
     'astr': use_a_star
     }
     method_to_use = switch_by_method.get(method.lower(), "Wrong method!")
-    return method_to_use(initial_state, order)
+    return method_to_use(initial_state, order.lower())
 
 
 def main():

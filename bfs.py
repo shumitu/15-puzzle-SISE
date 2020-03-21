@@ -17,12 +17,14 @@ class Bfs(object):
         self.number_of_visited = 0
         self.number_of_processed = 0
 
+
     def generate_new_states(self, state, search_order):
         for direction in search_order:
-            if state.check_if_move_possible(direction):
+            if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction):
                 new_state = Puzzle(state.current_state)
                 new_state.solution_string = state.solution_string
                 new_state.depth = state.depth
+                new_state.previous_direction = direction
                 new_state.make_move(direction)
                 self.to_be_visited.append(new_state)
 
