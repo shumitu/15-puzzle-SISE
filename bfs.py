@@ -6,6 +6,7 @@ class Bfs(object):
     def __init__(self, initial_state, search_order):
         super().__init__()
 
+        # popleft() for FIFO / append()
         self.to_be_visited = deque()
         self.already_visited = deque()
 

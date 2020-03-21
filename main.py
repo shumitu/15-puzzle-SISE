@@ -4,6 +4,7 @@ import numpy as np
 
 from puzzle import Puzzle
 from bfs import Bfs
+from dfs import Dfs
 
 # default values for height and width
 puzzle_width = puzzle_height = 4
@@ -52,8 +53,19 @@ Number of processed: {}
 Execution time: {} seconds""".format(*result, end_time - start_time))
 
 
-def use_dfs():
-    pass
+def use_dfs(initial_state, order):
+
+    dfs = Dfs(initial_state, order)
+    start_time = time.perf_counter()
+    result = dfs.run_search()
+    end_time = time.perf_counter()
+    
+    print("""Solution string: {}
+Max depth: {}
+Number of visited: {}
+Number of processed: {}
+Execution time: {} seconds""".format(*result, end_time - start_time))
+
 
 def use_a_star():
     pass
