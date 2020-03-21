@@ -32,6 +32,38 @@ def load_initial_puzzle(filename):
     return np.loadtxt(filename, dtype=int, skiprows=1)
 
 
+def save_final_data(result, execution_time, solution_filename, additional_filename):
+
+    if "No solution found!" not in result:
+        with open(solution_filename + ".txt", 'w') as f:
+            f.write(str(len(result[0])) + "\n" + result[0])
+
+        with open(additional_filename + ".txt", 'w') as f:
+            f.write(str(len(result[0])) + "\n")
+            f.write(str(result[2]) + "\n")
+            f.write(str(result[3]) + "\n")
+            f.write(str(result[1]) + "\n")
+            f.write(str(execution_time))
+
+    else:
+        with open(solution_filename + ".txt", 'w') as f:
+            f.write("-1")
+        with open(additional_filename + ".txt", 'w') as f:
+            f.write("-1")
+
+
+def print_result(result, execution_time):
+    if "No solution found!" not in result:
+        print("""Solution string: {}
+    Max depth: {}
+    Number of visited: {}
+    Number of processed: {}
+    Execution time: {} ms""".format(*result, execution_time))
+
+    else:
+        print("No solution found! Executed in: {} ms".format(execution_time))
+        
+
 def generate_correct_state(height, width):
 
     correct = np.arange(1, height * width + 1).reshape(height, width)
@@ -39,39 +71,39 @@ def generate_correct_state(height, width):
     return correct
 
 
-def use_bfs(initial_state, order):
+def use_bfs(initial_state, order, solution_filename, additional_filename):
     
     bfs = Bfs(initial_state, order)
     start_time = time.perf_counter()
     result = bfs.run_search()
     end_time = time.perf_counter()
     
-    print("""Solution string: {}
-Max depth: {}
-Number of visited: {}
-Number of processed: {}
-Execution time: {} seconds""".format(*result, end_time - start_time))
+    execution_time = round((end_time - start_time) * 1000, 3)
+    
+    print_result(result, execution_time)
+
+    save_final_data(result, execution_time, solution_filename, additional_filename)
 
 
-def use_dfs(initial_state, order):
+def use_dfs(initial_state, order, solution_filename, additional_filename):
 
     dfs = Dfs(initial_state, order)
     start_time = time.perf_counter()
     result = dfs.run_search()
     end_time = time.perf_counter()
+
+    execution_time = round((end_time - start_time) * 1000, 3)
     
-    print("""Solution string: {}
-Max depth: {}
-Number of visited: {}
-Number of processed: {}
-Execution time: {} seconds""".format(*result, end_time - start_time))
+    print_result(result, execution_time)
+
+    save_final_data(result, execution_time, solution_filename, additional_filename)
 
 
 def use_a_star():
     pass
 
 
-def choose_method(method, order, initial_state):
+def choose_method(method, order, initial_state, solution_filename, additional_filename):
 
     switch_by_method = {
     'bfs': use_bfs,
@@ -79,10 +111,18 @@ def choose_method(method, order, initial_state):
     'astr': use_a_star
     }
     method_to_use = switch_by_method.get(method.lower(), "Wrong method!")
-    return method_to_use(initial_state, order.lower())
+    return method_to_use(initial_state, order.lower(), solution_filename, additional_filename)
 
 
 def main():
+    """
+    args[0] - method, bfs / dfs / astr
+    args[1] - search order or heuristic
+    args[2] - filename of puzzle file
+    args[3] - filename of solution file
+    args[4] - filename of additional data file
+
+    """
 
     args = sys.argv[1:]
 
@@ -96,7 +136,7 @@ def main():
         Puzzle.correct_state, Puzzle.puzzle_height, Puzzle.puzzle_width = correct_puzzle, puzzle_height, puzzle_width
 
         first_state = Puzzle(initial_puzzle)
-        choose_method(args[0], args[1], first_state)
+        choose_method(args[0], args[1], first_state, args[3], args[4])
 
 
 

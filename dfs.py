@@ -24,6 +24,7 @@ class Dfs(object):
 
 
     def generate_new_states(self, state, search_order):
+        
         for direction in search_order:
             if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction):
                 new_state = Puzzle(state.current_state)
@@ -70,7 +71,7 @@ class Dfs(object):
 
         self.number_of_processed = len(self.already_vistied)
 
-        return self.result_string, self.max_depth, self.number_of_processed, self.number_of_visited  if solution_found else "No solution found!"
+        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed if solution_found else "No solution found!"
                 
         
 
