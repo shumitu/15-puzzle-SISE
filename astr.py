@@ -39,17 +39,11 @@ class Astr(object):
         distance = 0
         for i in range(Puzzle.puzzle_width):
             for j in range(Puzzle.puzzle_height):
-                expected_val = -1
-                if (i == Puzzle.puzzle_height - 1) and (j == Puzzle.puzzle_width - 1):
-                    expected_val = 0
-                else:
-                    expected_val = i * Puzzle.puzzle_height + j + 1
-
-                if state.current_state[j][i] != expected_val:
+                if state.current_state[i][j] != state.correct_state[i][j] and state.current_state[i][j] != 0:
                     distance += 1
-
+        
         return distance
-                
+
 
     def choose_heuristic(self, state, heuristic):
         switch_by_heuristic = {
