@@ -16,9 +16,17 @@ class Astr(object):
         self.result_string = ""
         self.max_depth = 0
         self.number_of_visited = 0
-        self.number_of_processed = 0
-
     
+
+    def hamming_dist(self, state):
+        distance = 0
+        for i in range(Puzzle.puzzle_width):
+            for j in range(Puzzle.puzzle_height):
+                if state.current_state[i][j] != state.correct_state[i][j] and state.current_state[i][j] != 0:
+                    distance += 1
+        
+        return distance
+
 
     def manhattan_dist(self, state):
         distance = 0
@@ -32,16 +40,6 @@ class Astr(object):
 
                     distance += abs(i - new_y) + abs(j - new_x)
 
-        return distance
-
-
-    def hamming_dist(self, state):
-        distance = 0
-        for i in range(Puzzle.puzzle_width):
-            for j in range(Puzzle.puzzle_height):
-                if state.current_state[i][j] != state.correct_state[i][j] and state.current_state[i][j] != 0:
-                    distance += 1
-        
         return distance
 
 
