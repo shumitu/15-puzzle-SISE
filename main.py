@@ -5,6 +5,7 @@ import numpy as np
 from puzzle import Puzzle
 from bfs import Bfs
 from dfs import Dfs
+from astr import Astr
 
 # default values for height and width
 puzzle_width = puzzle_height = 4
@@ -35,15 +36,30 @@ def load_initial_puzzle(filename):
 def save_final_data(result, execution_time, solution_filename, additional_filename):
 
     if "No solution found!" not in result:
-        with open(solution_filename + ".txt", 'w') as f:
-            f.write(str(len(result[0])) + "\n" + result[0])
+        if len(result) == 4:
+    
+            with open(solution_filename + ".txt", 'w') as f:
+                f.write(str(len(result[0])) + "\n" + result[0])
 
-        with open(additional_filename + ".txt", 'w') as f:
-            f.write(str(len(result[0])) + "\n")
-            f.write(str(result[2]) + "\n")
-            f.write(str(result[3]) + "\n")
-            f.write(str(result[1]) + "\n")
-            f.write(str(execution_time))
+            with open(additional_filename + ".txt", 'w') as f:
+                f.write(str(len(result[0])) + "\n")
+                f.write(str(result[2]) + "\n")
+                f.write(str(result[3]) + "\n")
+                f.write(str(result[1]) + "\n")
+                f.write(str(execution_time))
+
+        else:
+
+            with open(solution_filename + ".txt", 'w') as f:
+                f.write(str(len(result[0])) + "\n" + result[0])
+
+            with open(additional_filename + ".txt", 'w') as f:
+                f.write(str(len(result[0])) + "\n")
+                f.write(str(result[2]) + "\n")
+                f.write(str(result[2]) + "\n")
+                f.write(str(result[1]) + "\n")
+                f.write(str(execution_time))
+
 
     else:
         with open(solution_filename + ".txt", 'w') as f:
@@ -53,15 +69,17 @@ def save_final_data(result, execution_time, solution_filename, additional_filena
 
 
 def print_result(result, execution_time):
-    if "No solution found!" not in result:
-        print("""Solution string: {}
-    Max depth: {}
-    Number of visited: {}
-    Number of processed: {}
-    Execution time: {} ms""".format(*result, execution_time))
 
+    if "No solution found!" not in result:
+
+        if len(result) == 4:
+            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nNumber of processed: {}\nExecution time: {} ms".format(*result, execution_time))
+        else:
+            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nExecution time: {} ms".format(*result, execution_time))
+    
     else:
         print("No solution found! Executed in: {} ms".format(execution_time))
+
         
 
 def generate_correct_state(height, width):
@@ -99,8 +117,19 @@ def use_dfs(initial_state, order, solution_filename, additional_filename):
     save_final_data(result, execution_time, solution_filename, additional_filename)
 
 
-def use_a_star():
-    pass
+def use_a_star(initial_state, heuristic, solution_filename, additional_filename):
+    
+    a_star = Astr(initial_state, heuristic)
+    start_time = time.perf_counter()
+    result = a_star.run_search()
+    end_time = time.perf_counter()
+
+    execution_time = round((end_time - start_time) * 1000, 3)
+
+    print_result(result, execution_time)
+
+    save_final_data(result, execution_time, solution_filename, additional_filename)
+
 
 
 def choose_method(method, order, initial_state, solution_filename, additional_filename):

@@ -20,6 +20,13 @@ class Puzzle(object):
         self.previous_direction = ''
         self.depth = 0 
 
+    def __lt__(self, other):
+        return self.depth < other.depth
+
+    def __le__(self,other):
+        return not other.depth < self.depth
+        
+
 
     def check_if_solved(self):
         return (self.current_state == self.correct_state).all()
