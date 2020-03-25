@@ -8,7 +8,7 @@ class Bfs(object):
 
         # popleft() for FIFO / append()
         self.to_be_visited = deque()
-        self.already_visited = deque()
+        self.already_processed = deque()
 
         self.to_be_visited.append(initial_state)
         self.search_order = search_order
@@ -41,15 +41,15 @@ class Bfs(object):
 
             # Get first element from queue, FIFO order
             state_in_queue = self.to_be_visited.popleft()
-            self.already_visited.append(state_in_queue)
+            self.already_processed.append(state_in_queue)
 
             # If current state of puzzle is correct, break loop and return result string and additional data
             if state_in_queue.check_if_solved():
                 solution_found = True
                 self.result_string = state_in_queue.solution_string
                 self.max_depth = state_in_queue.depth
-                self.number_of_visited = len(self.to_be_visited) + len(self.already_visited)
-                self.number_of_processed = len(self.already_visited)
+                self.number_of_visited = len(self.to_be_visited) + len(self.already_processed)
+                self.number_of_processed = len(self.already_processed)
                 break
 
             # Generate new states using current state and given search order, e.g. LRUD

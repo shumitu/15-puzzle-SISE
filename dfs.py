@@ -4,7 +4,7 @@ from puzzle import Puzzle
 
 class Dfs(object):
 
-    max_depth_possible = 25
+    max_depth_possible = 20
     
     def __init__(self, initial_state, search_order):
         super().__init__()
