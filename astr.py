@@ -18,6 +18,7 @@ class Astr(object):
         self.number_of_visited = 0
     
 
+    # Function to calculate hamming distance which is number of misplaced tiles, without '0' which is an empty tile 
     def hamming_dist(self, state):
         distance = 0
         for i in range(Puzzle.puzzle_width):
@@ -28,6 +29,7 @@ class Astr(object):
         return distance
 
 
+    # Function to calculate manhattan distance which is sum of distances of every mispleaced tile to it correct position, without '0' which is an empty tile 
     def manhattan_dist(self, state):
         distance = 0
         for i in range(Puzzle.puzzle_width):
@@ -38,6 +40,7 @@ class Astr(object):
                     new_x = val % Puzzle.puzzle_width
                     new_y = val // Puzzle.puzzle_height
 
+                    # Take the sum of the absolute values of the differences of the coordinates.
                     distance += abs(i - new_y) + abs(j - new_x)
 
         return distance
@@ -52,6 +55,7 @@ class Astr(object):
         return result(state)
 
 
+    # Generate new states using given state
     def generate_new_states(self, state, search_order = "lurd"):
         for direction in search_order:
             if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction):
@@ -61,18 +65,14 @@ class Astr(object):
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
                 
+                # Calculate cost of movements and add this value with new state to priority queue
                 heuristic_val = new_state.depth + self.choose_heuristic(new_state, self.heuristic)
                 self.to_be_visited.put((heuristic_val, new_state))
                
 
-
+    # Simple function to check if given state already exists
     def check_if_new(self, states, state_to_check):
-
-        if state_to_check in states:
-            return False
-
-        else:
-            return True
+        return False if state_to_check in states else True
 
 
     def run_search(self):
@@ -81,11 +81,13 @@ class Astr(object):
 
         while self.to_be_visited:
 
+            # Get state from priority queue for which value of priority is the lowest
+            # Priority queue  returns tuple (priority, state), so we take [1] to get only state
             state_in_queue = self.to_be_visited.get()[1]
 
             if self.already_vistied:
 
-                while not self.check_if_new(self.already_vistied, state_in_queue):
+                if not self.check_if_new(self.already_vistied, state_in_queue):
                     state_in_queue = self.to_be_visited.get()[1]
 
             if state_in_queue.depth > self.max_depth:
