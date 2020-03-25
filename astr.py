@@ -66,9 +66,9 @@ class Astr(object):
                
 
 
-    def check_if_new(self, dict_of_states, state_to_check):
+    def check_if_new(self, states, state_to_check):
 
-        if state_to_check in dict_of_states:
+        if state_to_check in states:
             return False
 
         else:

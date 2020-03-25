@@ -16,8 +16,8 @@ class Puzzle(object):
         self.zero_index = np.argwhere(self.current_state == 0)[0]
 
         self.solution_string = ""
-        self.current_direction = ''
-        self.previous_direction = ''
+        self.current_direction = ""
+        self.previous_direction = ""
         self.depth = 0 
 
     def __lt__(self, other):

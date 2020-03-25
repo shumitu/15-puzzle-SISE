@@ -146,7 +146,7 @@ def choose_method(method, order, initial_state, solution_filename, additional_fi
 def main():
     """
     args[0] - method, bfs / dfs / astr
-    args[1] - search order or heuristic
+    args[1] - search order or heuristic e.g. ldur / rldu / manh / hamm
     args[2] - filename of puzzle file
     args[3] - filename of solution file
     args[4] - filename of additional data file
