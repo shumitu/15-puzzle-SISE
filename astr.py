@@ -97,8 +97,7 @@ class Astr(object):
                 solution_found = True
                 self.result_string = state_in_queue.solution_string
                 self.max_depth = state_in_queue.depth
-                self.number_of_visited = len(self.already_vistied) + len(self.to_be_visited)
-                self.number_of_processed = len(self.already_vistied)
+                self.number_of_visited = len(self.already_vistied)
                 break
 
             self.generate_new_states(state_in_queue)
