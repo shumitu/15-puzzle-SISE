@@ -1,4 +1,5 @@
 import numpy as np 
+import time
 from collections import deque
 from puzzle import Puzzle
 
@@ -22,6 +23,9 @@ class Dfs(object):
         self.number_of_visited = 1
         self.number_of_processed = 0
 
+        self.start_time = 0
+        self.end_time = 0
+
 
     # For every direction in search order generate new states using given state
     def generate_new_states(self, state, search_order):
@@ -38,6 +42,8 @@ class Dfs(object):
 
 
     def run_search(self):
+        
+        self.start_time = time.perf_counter()
 
         solution_found = False
     
@@ -75,9 +81,10 @@ class Dfs(object):
                 self.generate_new_states(state_in_queue, self.search_order)
 
         self.number_of_processed = len(self.already_vistied)
+        self.end_time = time.perf_counter()
 
         # If result was found return result string and other elements
-        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed if solution_found else "No solution found!"
+        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if solution_found else "No solution found!"
                 
         
 

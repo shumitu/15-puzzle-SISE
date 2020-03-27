@@ -1,5 +1,6 @@
 import numpy as np 
 from collections import deque
+import time
 from queue import PriorityQueue
 from puzzle import Puzzle
 
@@ -16,6 +17,9 @@ class Astr(object):
         self.result_string = ""
         self.max_depth = 0
         self.number_of_visited = 0
+
+        self.start_time = 0
+        self.end_time = 0
     
 
     # Function to calculate hamming distance which is number of misplaced tiles, without '0' which is an empty tile 
@@ -76,6 +80,8 @@ class Astr(object):
 
 
     def run_search(self):
+        
+        self.start_time = time.perf_counter()
 
         solution_found = False
 
@@ -98,13 +104,14 @@ class Astr(object):
                 self.result_string = state_in_queue.solution_string
                 self.max_depth = state_in_queue.depth
                 self.number_of_visited = len(self.already_vistied)
+                self.end_time = time.perf_counter()
                 break
 
             self.generate_new_states(state_in_queue)
 
             self.already_vistied.append(state_in_queue)
 
-        return self.result_string, self.max_depth, self.number_of_visited if solution_found else "No solution found!"
+        return self.result_string, self.max_depth, self.number_of_visited, round((self.end_time - self.start_time) * 1000, 3) if solution_found else "No solution found!"
         
 
 

@@ -1,4 +1,5 @@
 import numpy as np 
+import time
 from collections import deque
 from puzzle import Puzzle
 
@@ -18,6 +19,9 @@ class Bfs(object):
         self.number_of_visited = 0
         self.number_of_processed = 0
 
+        self.start_time = 0
+        self.end_time = 0
+
 
     # For every direction in search order generate new states using given state
     def generate_new_states(self, state, search_order):
@@ -35,6 +39,8 @@ class Bfs(object):
 
     def run_search(self):
 
+        self.start_time = time.perf_counter()
+
         solution_found = False
 
         while self.to_be_visited:
@@ -50,13 +56,14 @@ class Bfs(object):
                 self.max_depth = state_in_queue.depth
                 self.number_of_visited = len(self.to_be_visited) + len(self.already_processed)
                 self.number_of_processed = len(self.already_processed)
+                self.end_time = time.perf_counter()
                 break
 
             # Generate new states using current state and given search order, e.g. LRUD
             self.generate_new_states(state_in_queue, self.search_order)
 
         # If result was found return result string and other elements
-        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed if solution_found else "No solution found!"
+        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if solution_found else "No solution found!"
 
             
 

@@ -80,38 +80,38 @@ def main():
     list_for_bfs = [[Puzzle(single) for single in single_list] for single_list in list_of_puzzles]
     list_for_dfs = [[Puzzle(single) for single in single_list] for single_list in list_of_puzzles]
     list_for_astr_manh = [[Puzzle(single) for single in single_list] for single_list in list_of_puzzles]
-    list_for_astr_hamm = [[Puzzle(single) for single in single_list] for single_list in list_of_puzzles]
 
     # generate list of all results for given methods
 
     # for bfs
 
-    # start_time = time.perf_counter()
-    # res = [[Bfs(single_state, order).run_search() for order in direction_orders for single_state in single_list ] for single_list in list_for_bfs]
-    # end_time = time.perf_counter()
-    # print(end_time - start_time)
+    start_time = time.perf_counter()
+    res_bfs = [[Bfs(single_state, order).run_search() for order in direction_orders for single_state in single_list ] for single_list in list_for_bfs]
+    end_time = time.perf_counter()
+    print("BFS generating time: ",end_time - start_time)
 
     # for dfs
 
     start_time = time.perf_counter()
-    res = [[Dfs(single_state, order).run_search() for order in direction_orders for single_state in single_list ] for single_list in list_for_dfs]
+    res_dfs = [[Dfs(single_state, order).run_search() for order in direction_orders for single_state in single_list ] for single_list in list_for_dfs]
     end_time = time.perf_counter()
-    print(end_time - start_time)
+    print("DFS generating time: ",end_time - start_time)
 
     # for astar, hamm with manh
 
-    # start_time = time.perf_counter()
-    # res = [[Astr(single_state, heuristic).run_search() for heuristic in heuristics for single_state in single_list ] for single_list in list_for_dfs]
-    # end_time = time.perf_counter()
-    # print(end_time - start_time)
+    start_time = time.perf_counter()
+    res_astr = [[Astr(single_state, heuristic).run_search() for heuristic in heuristics for single_state in single_list ] for single_list in list_for_astr_manh]
+    end_time = time.perf_counter()
+    print("Astr generating time: ",end_time - start_time)
 
-
-    suma = 0
-    for a in res:
-        suma += len(a)
-    
-    print(suma)
-   
+    # CALCULATE MEANS SECTION
+    """
+    Solution length / Visited states / Processed states / Max depth / execution
+    First graph: Means for BFS, DFS, Astar together
+    Second graph: Means for BFS orderly separated
+    Third graph: Means for DFS orderly separated
+    Fourth graph: Means for Astar heuristics separated
+    """
 
     
 

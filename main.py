@@ -1,5 +1,4 @@
 import sys
-import time
 import numpy as np
 
 from puzzle import Puzzle
@@ -33,10 +32,10 @@ def load_initial_puzzle(filename):
     return np.loadtxt(filename, dtype=int, skiprows=1)
 
 
-def save_final_data(result, execution_time, solution_filename, additional_filename):
+def save_final_data(result, solution_filename, additional_filename):
 
     if "No solution found!" not in result:
-        if len(result) == 4:
+        if len(result) == 5:
     
             with open(solution_filename + ".txt", 'w') as f:
                 f.write(str(len(result[0])) + "\n" + result[0])
@@ -46,7 +45,7 @@ def save_final_data(result, execution_time, solution_filename, additional_filena
                 f.write(str(result[2]) + "\n")
                 f.write(str(result[3]) + "\n")
                 f.write(str(result[1]) + "\n")
-                f.write(str(execution_time))
+                f.write(str(result[4]))
 
         else:
 
@@ -58,7 +57,7 @@ def save_final_data(result, execution_time, solution_filename, additional_filena
                 f.write(str(result[2]) + "\n")
                 f.write(str(result[2]) + "\n")
                 f.write(str(result[1]) + "\n")
-                f.write(str(execution_time))
+                f.write(str(result[3]))
 
 
     else:
@@ -68,17 +67,17 @@ def save_final_data(result, execution_time, solution_filename, additional_filena
             f.write("-1")
 
 
-def print_result(result, execution_time):
+def print_result(result):
 
     if "No solution found!" not in result:
 
-        if len(result) == 4:
-            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nNumber of processed: {}\nExecution time: {} ms".format(*result, execution_time))
+        if len(result) == 5:
+            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nNumber of processed: {}\nExecution time: {} ms".format(*result))
         else:
-            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nExecution time: {} ms".format(*result, execution_time))
+            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nExecution time: {} ms".format(*result))
     
     else:
-        print("No solution found! Executed in: {} ms".format(execution_time))
+        print("No solution found!")
 
         
 
@@ -92,43 +91,31 @@ def generate_correct_state(height, width):
 def use_bfs(initial_state, order, solution_filename, additional_filename):
     
     bfs = Bfs(initial_state, order)
-    start_time = time.perf_counter()
     result = bfs.run_search()
-    end_time = time.perf_counter()
     
-    execution_time = round((end_time - start_time) * 1000, 3)
-    
-    print_result(result, execution_time)
+    print_result(result)
 
-    save_final_data(result, execution_time, solution_filename, additional_filename)
+    save_final_data(result, solution_filename, additional_filename)
 
 
 def use_dfs(initial_state, order, solution_filename, additional_filename):
 
     dfs = Dfs(initial_state, order)
-    start_time = time.perf_counter()
     result = dfs.run_search()
-    end_time = time.perf_counter()
 
-    execution_time = round((end_time - start_time) * 1000, 3)
-    
-    print_result(result, execution_time)
+    print_result(result)
 
-    save_final_data(result, execution_time, solution_filename, additional_filename)
+    save_final_data(result, solution_filename, additional_filename)
 
 
 def use_a_star(initial_state, heuristic, solution_filename, additional_filename):
     
     a_star = Astr(initial_state, heuristic)
-    start_time = time.perf_counter()
     result = a_star.run_search()
-    end_time = time.perf_counter()
 
-    execution_time = round((end_time - start_time) * 1000, 3)
+    print_result(result)
 
-    print_result(result, execution_time)
-
-    save_final_data(result, execution_time, solution_filename, additional_filename)
+    save_final_data(result, solution_filename, additional_filename)
 
 
 
