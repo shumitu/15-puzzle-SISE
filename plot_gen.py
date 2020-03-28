@@ -15,6 +15,7 @@ from astr import Astr
 labels = ["1", "2", "3", "4", "5", "6", "7"]
 direction_orders = ["rdul", "rdlu", "drul", "drlu", "ludr", "lurd", "uldr", "ulrd"]
 heuristics = ["manh", "hamm"]
+colors = [(random.random(), random.random(), random.random()) for i in range(8)]
 
 
 def load_initial_puzzle(filename):
@@ -201,9 +202,9 @@ def draw_means_together(bfs, dfs, astr, variant):
     r3 = [x + barWidth for x in r2]
     
     # Make the plot
-    plt.bar(r1, bfs_means, color='#172d9a', width=barWidth, edgecolor='black', label='BFS')
-    plt.bar(r2, dfs_means, color='#28892a', width=barWidth, edgecolor='black', label='DFS')
-    plt.bar(r3, astar_means, color='#ad4509', width=barWidth, edgecolor='black', label='A*')
+    plt.bar(r1, bfs_means, color=colors[0], width=barWidth, edgecolor='black', linewidth=1, label='BFS')
+    plt.bar(r2, dfs_means, color=colors[1], width=barWidth, edgecolor='black', linewidth=1,label='DFS')
+    plt.bar(r3, astar_means, color=colors[2], width=barWidth, edgecolor='black', linewidth=1, label='A*')
     
     # Add xticks on the middle of the group bars
     plt.title("Ogółem dla wszystkich łącznie", fontweight="bold", loc="center")
@@ -221,8 +222,6 @@ def draw_separated(plot_data, method, variant):
     # set width of bar
 
     plt.clf()
-
-    colors = [(random.random(), random.random(), random.random()) for i in range(8)]
 
     # set height of bar
 
@@ -266,8 +265,8 @@ def draw_separated(plot_data, method, variant):
         r2 = [x + barWidth for x in r1]
         out_1 = [method[heuristics[0]] for method in method_means]
         out_2 = [method[heuristics[1]] for method in method_means]
-        plt.bar(r1, out_1, color=colors[0], width=barWidth, edgecolor='black', label=heuristics[0])
-        plt.bar(r2, out_2, color=colors[1], width=barWidth, edgecolor='black', label=heuristics[1])
+        plt.bar(r1, out_1, color=colors[0], width=barWidth, edgecolor='black', linewidth=1, label=heuristics[0])
+        plt.bar(r2, out_2, color=colors[1], width=barWidth, edgecolor='black', linewidth=1, label=heuristics[1])
 
         plt.xticks([r + barWidth / 2 for r in range(len(out_1))], labels)
 
@@ -292,14 +291,14 @@ def draw_separated(plot_data, method, variant):
         out_7 = [method[direction_orders[6]] for method in method_means]
         out_8 = [method[direction_orders[7]] for method in method_means]
 
-        plt.bar(r1, out_1, color=colors[0], width=barWidth, edgecolor='black', label=direction_orders[0])
-        plt.bar(r2, out_2, color=colors[1], width=barWidth, edgecolor='black', label=direction_orders[1])
-        plt.bar(r3, out_3, color=colors[2], width=barWidth, edgecolor='black', label=direction_orders[2])
-        plt.bar(r4, out_4, color=colors[3], width=barWidth, edgecolor='black', label=direction_orders[3])
-        plt.bar(r5, out_5, color=colors[4], width=barWidth, edgecolor='black', label=direction_orders[4])
-        plt.bar(r6, out_6, color=colors[5], width=barWidth, edgecolor='black', label=direction_orders[5])
-        plt.bar(r7, out_7, color=colors[6], width=barWidth, edgecolor='black', label=direction_orders[6])
-        plt.bar(r8, out_8, color=colors[7], width=barWidth, edgecolor='black', label=direction_orders[7])
+        plt.bar(r1, out_1, color=colors[0], width=barWidth, edgecolor='black', linewidth=1, label=direction_orders[0])
+        plt.bar(r2, out_2, color=colors[1], width=barWidth, edgecolor='black', linewidth=1, label=direction_orders[1])
+        plt.bar(r3, out_3, color=colors[2], width=barWidth, edgecolor='black', linewidth=1, label=direction_orders[2])
+        plt.bar(r4, out_4, color=colors[3], width=barWidth, edgecolor='black', linewidth=1, label=direction_orders[3])
+        plt.bar(r5, out_5, color=colors[4], width=barWidth, edgecolor='black', linewidth=1, label=direction_orders[4])
+        plt.bar(r6, out_6, color=colors[5], width=barWidth, edgecolor='black', linewidth=1, label=direction_orders[5])
+        plt.bar(r7, out_7, color=colors[6], width=barWidth, edgecolor='black', linewidth=1, label=direction_orders[6])
+        plt.bar(r8, out_8, color=colors[7], width=barWidth, edgecolor='black', linewidth=1, label=direction_orders[7])
 
         plt.xticks([r + 3 * barWidth for r in range(len(out_1))], labels)
     
@@ -310,7 +309,7 @@ def draw_separated(plot_data, method, variant):
     
     
     # Create legend & Show graphic
-    plt.legend(ncol=2)
+    plt.legend(ncol=2, fontsize="small")
     plt.savefig("plots/" + filename, dpi=300)
 
 
