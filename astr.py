@@ -17,6 +17,7 @@ class Astr(object):
         self.result_string = ""
         self.max_depth = 0
         self.number_of_visited = 0
+        self.number_of_processed = 0
 
         self.start_time = 0
         self.end_time = 0
@@ -72,6 +73,7 @@ class Astr(object):
                 # Calculate cost of movements and add this value with new state to priority queue
                 heuristic_val = new_state.depth + self.choose_heuristic(new_state, self.heuristic)
                 self.to_be_visited.put((heuristic_val, new_state))
+                self.number_of_processed += 1
                
 
     # Simple function to check if given state already exists
@@ -95,6 +97,7 @@ class Astr(object):
 
                 if not self.check_if_new(self.already_vistied, state_in_queue):
                     state_in_queue = self.to_be_visited.get()[1]
+                    self.number_of_processed += 1
 
             if state_in_queue.depth > self.max_depth:
                 self.max_depth = state_in_queue.depth
@@ -103,7 +106,7 @@ class Astr(object):
                 solution_found = True
                 self.result_string = state_in_queue.solution_string
                 self.max_depth = state_in_queue.depth
-                self.number_of_visited = len(self.already_vistied)
+                self.number_of_visited = len(self.already_vistied) + self.number_of_processed
                 self.end_time = time.perf_counter()
                 break
 
@@ -111,7 +114,7 @@ class Astr(object):
 
             self.already_vistied.append(state_in_queue)
 
-        return self.result_string, self.max_depth, self.number_of_visited, round((self.end_time - self.start_time) * 1000, 3) if solution_found else "No solution found!"
+        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if solution_found else "No solution found!"
         
 
 

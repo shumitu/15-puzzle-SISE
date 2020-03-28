@@ -42,16 +42,64 @@ def string_mean(result):
     return averages
 
 
-def draw_by_solution_length(bfs, dfs, astr):
+def other_mean(result, pos):
+    sum_of_str = [0 for i in range(len(result))]
+    no_of_elems = [0 for i in range(len(result))]
+    averages = [0 for i in range(len(result))]
+    for i in range(len(result)):
+        for j in range(len(result[i])):
+            sum_of_str[i] += result[i][j][pos]
+            no_of_elems[i] += 1
+
+    for i in range(len(sum_of_str)):
+        averages[i] = sum_of_str[i] / no_of_elems[i]
+
+    return averages
+
+
+def draw_means_together(bfs, dfs, astr, variant):
 
     # set width of bar
     barWidth = 0.25
-    
+    plt.clf()
+
     # set height of bar
 
-    bfs_means = string_mean(bfs)
-    dfs_means = string_mean(dfs)
-    astar_means = string_mean(astr)
+    if variant == 0:
+        bfs_means = string_mean(bfs)
+        dfs_means = string_mean(dfs)
+        astar_means = string_mean(astr)
+        filename = "mean_tog_sol_length.png"
+        y_title = "Średnia długość rozwiązania"
+
+    if variant == 1:
+        bfs_means = other_mean(bfs, 1)
+        dfs_means = other_mean(dfs, 1)
+        astar_means = other_mean(astr, 1)
+        filename = "mean_tog_num_depth.png"
+        y_title = "Średnia maksymalna głębokość rekursji"
+
+    if variant == 2:
+        bfs_means = other_mean(bfs, 2)
+        dfs_means = other_mean(dfs, 2)
+        astar_means = other_mean(astr, 2)
+        filename = "mean_tog_num_visited.png"
+        y_title = "Średnia liczba odwiedzonych stanów"
+
+    if variant == 3:
+        bfs_means = other_mean(bfs, 3)
+        dfs_means = other_mean(dfs, 3)
+        astar_means = other_mean(astr, 3)
+        filename = "mean_tog_num_processed.png"
+        y_title = "Średnia liczba przetworzonych stanów"
+
+    if variant == 4:
+        bfs_means = other_mean(bfs, 4)
+        dfs_means = other_mean(dfs, 4)
+        astar_means = other_mean(astr, 4)
+        filename = "mean_tog_exec_time.png"
+        y_title = "Średni czas wykonania [ms]"
+
     
     # Set position of bar on X axis
     r1 = np.arange(len(bfs_means))
@@ -59,17 +107,19 @@ def draw_by_solution_length(bfs, dfs, astr):
     r3 = [x + barWidth for x in r2]
     
     # Make the plot
-    plt.bar(r1, bfs_means, color='#7f6d5f', width=barWidth, edgecolor='white', label='BFS')
-    plt.bar(r2, dfs_means, color='#557f2d', width=barWidth, edgecolor='white', label='DFS')
-    plt.bar(r3, astar_means, color='#2d7f5e', width=barWidth, edgecolor='white', label='A*')
+    plt.bar(r1, bfs_means, color='#172d9a', width=barWidth, edgecolor='white', label='BFS')
+    plt.bar(r2, dfs_means, color='#28892a', width=barWidth, edgecolor='white', label='DFS')
+    plt.bar(r3, astar_means, color='#ad4509', width=barWidth, edgecolor='white', label='A*')
     
     # Add xticks on the middle of the group bars
-    plt.xlabel('Depth', fontweight='bold')
+    plt.title("Ogółem", fontweight="bold", loc="center")
+    plt.xlabel("Głębokość", fontweight="bold")
+    plt.ylabel(y_title, fontweight="bold")
     plt.xticks([r + barWidth for r in range(len(bfs_means))], labels)
     
     # Create legend & Show graphic
     plt.legend()
-    plt.show()
+    plt.savefig("plots/" + filename, dpi=300)
 
 
 
@@ -125,7 +175,7 @@ def main():
     end_time = time.perf_counter()
     print("Astr generating time: ",end_time - start_time)
 
-    # CALCULATE MEANS SECTION
+    # CALCULATE AND PLOT SECTION
     """
     Solution length / Visited states / Processed states / Max depth / execution, together 20 graphs
     First graph: Means for BFS, DFS, Astar together
@@ -134,7 +184,14 @@ def main():
     Fourth graph: Means for Astar heuristics separated
     """
 
-    draw_by_solution_length(res_bfs,res_dfs,res_astr)
+    # DRAW MEANS FOR SOLUTION LENGTH TOGETHER
+    draw_means_together(res_bfs,res_dfs,res_astr, 0)
+    draw_means_together(res_bfs,res_dfs,res_astr, 1)
+    draw_means_together(res_bfs,res_dfs,res_astr, 2)
+    draw_means_together(res_bfs,res_dfs,res_astr, 3)
+    draw_means_together(res_bfs,res_dfs,res_astr, 4)
+
+
 
 if __name__ == "__main__":
     main()
