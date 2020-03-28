@@ -269,7 +269,7 @@ def draw_separated(plot_data, method, variant):
         plt.bar(r1, out_1, color=colors[0], width=barWidth, edgecolor='black', label=heuristics[0])
         plt.bar(r2, out_2, color=colors[1], width=barWidth, edgecolor='black', label=heuristics[1])
 
-        plt.xticks([r for r in range(len(out_1))], labels)
+        plt.xticks([r + barWidth / 2 for r in range(len(out_1))], labels)
 
     else:
         barWidth = 0.10
