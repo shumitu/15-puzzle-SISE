@@ -1,6 +1,7 @@
 import sys
 import time
 import os
+import random
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -27,34 +28,127 @@ def generate_correct_state(height = 4, width = 4):
     return correct
 
 
-def string_mean(result):
-    sum_of_str = [0 for i in range(len(result))]
-    no_of_elems = [0 for i in range(len(result))]
-    averages = [0 for i in range(len(result))]
-    for i in range(len(result)):
-        for j in range(len(result[i])):
-            sum_of_str[i] += len(result[i][j][0])
-            no_of_elems[i] += 1
+def string_mean(result, separated,method="empty"):
+    if not separated:
+        sum_of_str = [0 for _ in range(len(result))]
+        no_of_elems = [0 for _ in range(len(result))]
+        averages = [0 for _ in range(len(result))]
+        for i in range(len(result)):
+            for j in range(len(result[i])):
+                sum_of_str[i] += len(result[i][j][0][0])
+                no_of_elems[i] += 1
 
-    for i in range(len(sum_of_str)):
-        averages[i] = sum_of_str[i] / no_of_elems[i]
+        for i in range(len(sum_of_str)):
+            averages[i] = sum_of_str[i] / no_of_elems[i]
 
-    return averages
+        return averages
+
+    else:
+        # create list of dictionaries and declare values for orders as lists or 0
+        list_of_dicts = [{} for _ in range(len(result))]
+        list_of_sums = [{} for _ in range(len(result))]
+        list_of_elem_sums = [{} for _ in range(len(result))]
+        list_of_averages = [{} for _ in range(len(result))]
+
+        for single_dict in list_of_dicts:
+            for order in direction_orders if method == "empty" else heuristics:
+                single_dict[order] = []
+        
+        for single_dict in list_of_sums:
+            for order in direction_orders if method == "empty" else heuristics:
+                single_dict[order] = 0
+        
+        for single_dict in list_of_elem_sums:
+            for order in direction_orders if method == "empty" else heuristics:
+                single_dict[order] = 0
+
+        for single_dict in list_of_averages:
+            for order in direction_orders if method == "empty" else heuristics:
+                single_dict[order] = 0
+    
+
+        # separate data via orders
+        for order in direction_orders if method == "empty" else heuristics:
+            for i in range(len(result)):
+                for j in range(len(result[i])):
+                    if result[i][j][1] == order:
+                        list_of_dicts[i][order].append(result[i][j][0])
 
 
-def other_mean(result, pos):
-    sum_of_str = [0 for i in range(len(result))]
-    no_of_elems = [0 for i in range(len(result))]
-    averages = [0 for i in range(len(result))]
-    for i in range(len(result)):
-        for j in range(len(result[i])):
-            sum_of_str[i] += result[i][j][pos]
-            no_of_elems[i] += 1
+        # calculate length for strings
+        for order in direction_orders if method == "empty" else heuristics:
+            for i in range(len(result)):
+                for j in range(len(list_of_dicts[i][order])):
+                    list_of_sums[i][order] += len(list_of_dicts[i][order][j][0])
+                    list_of_elem_sums[i][order] += 1
 
-    for i in range(len(sum_of_str)):
-        averages[i] = sum_of_str[i] / no_of_elems[i]
+        for order in direction_orders if method == "empty" else heuristics:
+            for i in range(len(list_of_sums)):
+                list_of_averages[i][order] = list_of_sums[i][order] / list_of_elem_sums[i][order]
 
-    return averages
+        return list_of_averages
+
+
+def other_mean(result, pos, separated, method = "empty"):
+    if not separated:
+        sum_of_str = [0 for i in range(len(result))]
+        no_of_elems = [0 for i in range(len(result))]
+        averages = [0 for i in range(len(result))]
+        for i in range(len(result)):
+            for j in range(len(result[i])):
+                sum_of_str[i] += result[i][j][0][pos]
+                no_of_elems[i] += 1
+
+        for i in range(len(sum_of_str)):
+            averages[i] = sum_of_str[i] / no_of_elems[i]
+
+        return averages
+
+    else:
+# create list of dictionaries and declare values for orders as lists or 0
+        list_of_dicts = [{} for _ in range(len(result))]
+        list_of_sums = [{} for _ in range(len(result))]
+        list_of_elem_sums = [{} for _ in range(len(result))]
+        list_of_averages = [{} for _ in range(len(result))]
+
+        for single_dict in list_of_dicts:
+            for order in direction_orders if method == "empty" else heuristics:
+                single_dict[order] = []
+        
+        for single_dict in list_of_sums:
+            for order in direction_orders if method == "empty" else heuristics:
+                single_dict[order] = 0
+        
+        for single_dict in list_of_elem_sums:
+            for order in direction_orders if method == "empty" else heuristics:
+                single_dict[order] = 0
+
+        for single_dict in list_of_averages:
+            for order in direction_orders if method == "empty" else heuristics:
+                single_dict[order] = 0
+    
+
+        # separate data via orders
+        for order in direction_orders if method == "empty" else heuristics:
+            for i in range(len(result)):
+                for j in range(len(result[i])):
+                    if result[i][j][1] == order:
+                        list_of_dicts[i][order].append(result[i][j][0])
+
+
+        # calculate length
+        for order in direction_orders if method == "empty" else heuristics:
+            for i in range(len(result)):
+                for j in range(len(list_of_dicts[i][order])):
+                    list_of_sums[i][order] += list_of_dicts[i][order][j][pos]
+                    list_of_elem_sums[i][order] += 1
+
+        for order in direction_orders if method == "empty" else heuristics:
+            for i in range(len(list_of_sums)):
+                list_of_averages[i][order] = list_of_sums[i][order] / list_of_elem_sums[i][order]
+
+        return list_of_averages
+
 
 
 def draw_means_together(bfs, dfs, astr, variant):
@@ -66,38 +160,38 @@ def draw_means_together(bfs, dfs, astr, variant):
     # set height of bar
 
     if variant == 0:
-        bfs_means = string_mean(bfs)
-        dfs_means = string_mean(dfs)
-        astar_means = string_mean(astr)
-        filename = "mean_tog_sol_length.png"
+        bfs_means = string_mean(bfs, False)
+        dfs_means = string_mean(dfs, False)
+        astar_means = string_mean(astr, False)
+        filename = "mean_together_solution_length.png"
         y_title = "Średnia długość rozwiązania"
 
     if variant == 1:
-        bfs_means = other_mean(bfs, 1)
-        dfs_means = other_mean(dfs, 1)
-        astar_means = other_mean(astr, 1)
-        filename = "mean_tog_num_depth.png"
+        bfs_means = other_mean(bfs, 1, False)
+        dfs_means = other_mean(dfs, 1, False)
+        astar_means = other_mean(astr, 1, False)
+        filename = "mean_together_max_depth.png"
         y_title = "Średnia maksymalna głębokość rekursji"
 
     if variant == 2:
-        bfs_means = other_mean(bfs, 2)
-        dfs_means = other_mean(dfs, 2)
-        astar_means = other_mean(astr, 2)
-        filename = "mean_tog_num_visited.png"
+        bfs_means = other_mean(bfs, 2, False)
+        dfs_means = other_mean(dfs, 2, False)
+        astar_means = other_mean(astr, 2, False)
+        filename = "mean_together_number_visited.png"
         y_title = "Średnia liczba odwiedzonych stanów"
 
     if variant == 3:
-        bfs_means = other_mean(bfs, 3)
-        dfs_means = other_mean(dfs, 3)
-        astar_means = other_mean(astr, 3)
-        filename = "mean_tog_num_processed.png"
+        bfs_means = other_mean(bfs, 3, False)
+        dfs_means = other_mean(dfs, 3, False)
+        astar_means = other_mean(astr, 3, False)
+        filename = "mean_together_number_processed.png"
         y_title = "Średnia liczba przetworzonych stanów"
 
     if variant == 4:
-        bfs_means = other_mean(bfs, 4)
-        dfs_means = other_mean(dfs, 4)
-        astar_means = other_mean(astr, 4)
-        filename = "mean_tog_exec_time.png"
+        bfs_means = other_mean(bfs, 4, False)
+        dfs_means = other_mean(dfs, 4, False)
+        astar_means = other_mean(astr, 4, False)
+        filename = "mean_togerher_execution_time.png"
         y_title = "Średni czas wykonania [ms]"
 
     
@@ -107,12 +201,12 @@ def draw_means_together(bfs, dfs, astr, variant):
     r3 = [x + barWidth for x in r2]
     
     # Make the plot
-    plt.bar(r1, bfs_means, color='#172d9a', width=barWidth, edgecolor='white', label='BFS')
-    plt.bar(r2, dfs_means, color='#28892a', width=barWidth, edgecolor='white', label='DFS')
-    plt.bar(r3, astar_means, color='#ad4509', width=barWidth, edgecolor='white', label='A*')
+    plt.bar(r1, bfs_means, color='#172d9a', width=barWidth, edgecolor='black', label='BFS')
+    plt.bar(r2, dfs_means, color='#28892a', width=barWidth, edgecolor='black', label='DFS')
+    plt.bar(r3, astar_means, color='#ad4509', width=barWidth, edgecolor='black', label='A*')
     
     # Add xticks on the middle of the group bars
-    plt.title("Ogółem", fontweight="bold", loc="center")
+    plt.title("Ogółem dla wszystkich łącznie", fontweight="bold", loc="center")
     plt.xlabel("Głębokość", fontweight="bold")
     plt.ylabel(y_title, fontweight="bold")
     plt.xticks([r + barWidth for r in range(len(bfs_means))], labels)
@@ -123,17 +217,103 @@ def draw_means_together(bfs, dfs, astr, variant):
 
 
 
-def draw_by_visited(result):
-    pass
+def draw_separated(plot_data, method, variant):
+    # set width of bar
 
-def draw_by_processed(result):
-    pass
+    plt.clf()
 
-def draw_by_depth(result):
-    pass
+    colors = [(random.random(), random.random(), random.random()) for i in range(8)]
 
-def draw_by_time(result):
-    pass
+    # set height of bar
+
+    if variant == 0:
+        method_means = string_mean(plot_data, True,method) if method == "astr" else string_mean(plot_data, True)
+        filename = "mean_" + method + "_separated_solution_length.png"
+        y_title = "Średnia długość rozwiązania"
+        x_title = method + " oddzielnie"
+
+    if variant == 1:
+        method_means = other_mean(plot_data, 1, True,method) if method == "astr" else other_mean(plot_data, 1, True)
+        filename = "mean_" + method + "_separated_max_depth.png"
+        y_title = "Średnia maksymalna głębokość rekursji"
+        x_title = method + " oddzielnie"
+
+    if variant == 2:
+        method_means = other_mean(plot_data, 2, True,method) if method == "astr" else other_mean(plot_data, 2, True)
+        filename = "mean_" + method + "_separated_number_visited.png"
+        y_title = "Średnia liczba odwiedzonych stanów"
+        x_title = method + " oddzielnie"
+
+    if variant == 3:
+        method_means = other_mean(plot_data, 3, True,method) if method == "astr" else other_mean(plot_data, 3, True)
+        filename = "mean_" + method + "_separated_number_processed.png"
+        y_title = "Średnia liczba przetworzonych stanów"
+        x_title = method + " oddzielnie"
+
+    if variant == 4:
+        method_means = other_mean(plot_data, 4, True,method) if method == "astr" else other_mean(plot_data, 4, True)
+        filename = "mean_" + method + "_exec_time.png"
+        y_title = "Średni czas wykonania [ms]"
+        x_title = method + " oddzielnie"
+
+    
+    # Set position of bar on X axis
+
+    if method == "astr":
+        barWidth = 0.45
+
+        r1 = np.arange(len(method_means))
+        r2 = [x + barWidth for x in r1]
+        out_1 = [method[heuristics[0]] for method in method_means]
+        out_2 = [method[heuristics[1]] for method in method_means]
+        plt.bar(r1, out_1, color=colors[0], width=barWidth, edgecolor='black', label=heuristics[0])
+        plt.bar(r2, out_2, color=colors[1], width=barWidth, edgecolor='black', label=heuristics[1])
+
+        plt.xticks([r for r in range(len(out_1))], labels)
+
+    else:
+        barWidth = 0.10
+
+        r1 = np.arange(len(method_means))
+        r2 = [x + barWidth for x in r1] 
+        r3 = [x + barWidth for x in r2]
+        r4 = [x + barWidth for x in r3]
+        r5 = [x + barWidth for x in r4]
+        r6 = [x + barWidth for x in r5]
+        r7 = [x + barWidth for x in r6]
+        r8 = [x + barWidth for x in r7]
+
+        out_1 = [method[direction_orders[0]] for method in method_means]
+        out_2 = [method[direction_orders[1]] for method in method_means]
+        out_3 = [method[direction_orders[2]] for method in method_means]
+        out_4 = [method[direction_orders[3]] for method in method_means]
+        out_5 = [method[direction_orders[4]] for method in method_means]
+        out_6 = [method[direction_orders[5]] for method in method_means]
+        out_7 = [method[direction_orders[6]] for method in method_means]
+        out_8 = [method[direction_orders[7]] for method in method_means]
+
+        plt.bar(r1, out_1, color=colors[0], width=barWidth, edgecolor='black', label=direction_orders[0])
+        plt.bar(r2, out_2, color=colors[1], width=barWidth, edgecolor='black', label=direction_orders[1])
+        plt.bar(r3, out_3, color=colors[2], width=barWidth, edgecolor='black', label=direction_orders[2])
+        plt.bar(r4, out_4, color=colors[3], width=barWidth, edgecolor='black', label=direction_orders[3])
+        plt.bar(r5, out_5, color=colors[4], width=barWidth, edgecolor='black', label=direction_orders[4])
+        plt.bar(r6, out_6, color=colors[5], width=barWidth, edgecolor='black', label=direction_orders[5])
+        plt.bar(r7, out_7, color=colors[6], width=barWidth, edgecolor='black', label=direction_orders[6])
+        plt.bar(r8, out_8, color=colors[7], width=barWidth, edgecolor='black', label=direction_orders[7])
+
+        plt.xticks([r + 3 * barWidth for r in range(len(out_1))], labels)
+    
+    # Add xticks on the middle of the group bars
+    plt.title(x_title, fontweight="bold", loc="center")
+    plt.xlabel("Głębokość", fontweight="bold")
+    plt.ylabel(y_title, fontweight="bold")
+    
+    
+    # Create legend & Show graphic
+    plt.legend(ncol=2)
+    plt.savefig("plots/" + filename, dpi=300)
+
+
 
 
 def main():
@@ -157,21 +337,21 @@ def main():
     # for bfs
 
     start_time = time.perf_counter()
-    res_bfs = [[Bfs(single_state, order).run_search() for order in direction_orders for single_state in single_list ] for single_list in list_for_bfs]
+    res_bfs = [[(Bfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_bfs]
     end_time = time.perf_counter()
     print("BFS generating time: ",end_time - start_time)
 
     # for dfs
 
     start_time = time.perf_counter()
-    res_dfs = [[Dfs(single_state, order).run_search() for order in direction_orders for single_state in single_list ] for single_list in list_for_dfs]
+    res_dfs = [[(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_dfs]
     end_time = time.perf_counter()
     print("DFS generating time: ",end_time - start_time)
 
     # for astar, hamm with manh
 
     start_time = time.perf_counter()
-    res_astr = [[Astr(single_state, heuristic).run_search() for heuristic in heuristics for single_state in single_list ] for single_list in list_for_astr_manh]
+    res_astr = [[(Astr(single_state, heuristic).run_search(), heuristic) for heuristic in heuristics for single_state in single_list ] for single_list in list_for_astr_manh]
     end_time = time.perf_counter()
     print("Astr generating time: ",end_time - start_time)
 
@@ -191,7 +371,11 @@ def main():
     draw_means_together(res_bfs,res_dfs,res_astr, 3)
     draw_means_together(res_bfs,res_dfs,res_astr, 4)
 
-
+    for i in range(5):
+        draw_separated(res_bfs, "bfs", i)
+        draw_separated(res_dfs, "dfs", i)
+        draw_separated(res_astr, "astr", i)
+        
 
 if __name__ == "__main__":
     main()
