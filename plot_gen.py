@@ -207,7 +207,7 @@ def draw_means_together(bfs, dfs, astr, variant):
     plt.bar(r3, astar_means, color=colors[2], width=barWidth, edgecolor='black', linewidth=1, label='A*')
     
     # Add xticks on the middle of the group bars
-    plt.title("Ogółem dla wszystkich łącznie", fontweight="bold", loc="center")
+    plt.title("Ogółem", fontweight="bold", loc="center")
     plt.xlabel("Głębokość", fontweight="bold")
     plt.ylabel(y_title, fontweight="bold")
     plt.xticks([r + barWidth for r in range(len(bfs_means))], labels)
@@ -229,31 +229,31 @@ def draw_separated(plot_data, method, variant):
         method_means = string_mean(plot_data, True,method) if method == "astr" else string_mean(plot_data, True)
         filename = "mean_" + method + "_separated_solution_length.png"
         y_title = "Średnia długość rozwiązania"
-        x_title = method + " oddzielnie"
+        x_title = "A*" if method == "astr" else method.upper()
 
     if variant == 1:
         method_means = other_mean(plot_data, 1, True,method) if method == "astr" else other_mean(plot_data, 1, True)
         filename = "mean_" + method + "_separated_max_depth.png"
         y_title = "Średnia maksymalna głębokość rekursji"
-        x_title = method + " oddzielnie"
+        x_title = "A*" if method == "astr" else method.upper()
 
     if variant == 2:
         method_means = other_mean(plot_data, 2, True,method) if method == "astr" else other_mean(plot_data, 2, True)
         filename = "mean_" + method + "_separated_number_visited.png"
         y_title = "Średnia liczba odwiedzonych stanów"
-        x_title = method + " oddzielnie"
+        x_title = "A*" if method == "astr" else method.upper()
 
     if variant == 3:
         method_means = other_mean(plot_data, 3, True,method) if method == "astr" else other_mean(plot_data, 3, True)
         filename = "mean_" + method + "_separated_number_processed.png"
         y_title = "Średnia liczba przetworzonych stanów"
-        x_title = method + " oddzielnie"
+        x_title = "A*" if method == "astr" else method.upper()
 
     if variant == 4:
         method_means = other_mean(plot_data, 4, True,method) if method == "astr" else other_mean(plot_data, 4, True)
-        filename = "mean_" + method + "_exec_time.png"
+        filename = "mean_" + method + "_separated_exec_time.png"
         y_title = "Średni czas wykonania [ms]"
-        x_title = method + " oddzielnie"
+        x_title = "A*" if method == "astr" else method.upper()
 
     
     # Set position of bar on X axis
