@@ -4,6 +4,7 @@ import numpy as np
 from puzzle import Puzzle
 from bfs import Bfs
 from dfs import Dfs
+# from dfsv2 import Dfs
 from astr import Astr
 
 # default values for height and width

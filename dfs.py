@@ -5,7 +5,7 @@ from puzzle import Puzzle
 
 class Dfs(object):
 
-    max_depth_possible = 15
+    max_depth_possible = 10
     
     def __init__(self, initial_state, search_order):
         super().__init__()
@@ -33,7 +33,7 @@ class Dfs(object):
             if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction):
                 new_state = Puzzle(state.current_state)
                 new_state.solution_string = state.solution_string
-                new_state.depth = state.depth + 1
+                new_state.depth = state.depth
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
 
@@ -61,6 +61,7 @@ class Dfs(object):
                 solution_found = True
                 self.result_string = state_in_queue.solution_string
                 self.max_depth = state_in_queue.depth
+                break
                 
 
             else:
