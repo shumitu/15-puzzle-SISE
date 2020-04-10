@@ -5,6 +5,8 @@ import random
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+import multiprocessing as mp
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 from puzzle import Puzzle
 from bfs import Bfs
@@ -194,6 +196,7 @@ def draw_means_together(bfs, dfs, astr, variant):
         astar_means = other_mean(astr, 4, False)
         filename = "mean_togerher_execution_time.png"
         y_title = "Średni czas wykonania [ms]"
+        plt.yscale("log", subsy=[2, 4, 6, 8])
 
     
     # Set position of bar on X axis
@@ -254,6 +257,7 @@ def draw_separated(plot_data, method, variant):
         filename = "mean_" + method + "_separated_exec_time.png"
         y_title = "Średni czas wykonania [ms]"
         x_title = "A*" if method == "astr" else method.upper()
+        if method == "dfs": plt.yscale("log", subsy=[2, 4, 6, 8])
 
     
     # Set position of bar on X axis
@@ -313,6 +317,9 @@ def draw_separated(plot_data, method, variant):
     plt.savefig("plots/" + filename, dpi=300)
 
 
+def dfs_worker(single_list):
+    res_dfs = [(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ]
+    return res_dfs
 
 
 def main():
@@ -336,16 +343,45 @@ def main():
     # for bfs
 
     start_time = time.perf_counter()
+
     res_bfs = [[(Bfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_bfs]
+
+    # executors_list_bfs = []
+    # with ProcessPoolExecutor() as executor:
+    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[0]))
+    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[1]))
+    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[2]))
+    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[3]))
+    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[4]))
+    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[5]))
+    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[6]))
+
     end_time = time.perf_counter()
     print("BFS generating time: ",round(end_time - start_time, 3), " s")
+
+    # res_bfs = [i.result() for i in executors_list_bfs]
 
     # for dfs
 
     start_time = time.perf_counter()
-    res_dfs = [[(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_dfs]
+    #res_dfs = [[(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_dfs]
+
+    executors_list_dfs = []
+    with ProcessPoolExecutor(max_workers = 4) as executor:
+        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[0]))
+        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[1]))
+        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[2]))
+        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[3]))
+        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[4]))
+        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[5]))
+        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[6]))
+
     end_time = time.perf_counter()
     print("DFS generating time: ",round(end_time - start_time, 3), " s")
+
+    res_dfs = [i.result() for i in executors_list_dfs]
+
+    # print(res_dfs)
 
     # for astar, hamm with manh
 

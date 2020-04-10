@@ -3,7 +3,7 @@ import time
 from collections import deque
 from puzzle import Puzzle
 
-class Bfs(object):
+class Bfs:
     def __init__(self, initial_state, search_order):
         super().__init__()
 

@@ -1,11 +1,11 @@
 import numpy as np 
 from collections import deque
 
-class Puzzle(object):
+class Puzzle:
     
-    correct_state = None
-    puzzle_height = int 
-    puzzle_width = int
+    correct_state = np.array([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,0]])
+    puzzle_height = 4 
+    puzzle_width = 4
 
     def __init__(self, current_state):
         super().__init__()

@@ -4,7 +4,7 @@ import time
 from queue import PriorityQueue
 from puzzle import Puzzle
 
-class Astr(object):
+class Astr:
     def __init__(self, initial_state, heuristic):
         super().__init__()
 

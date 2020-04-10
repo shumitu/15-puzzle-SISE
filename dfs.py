@@ -3,9 +3,9 @@ import time
 from collections import deque
 from puzzle import Puzzle
 
-class Dfs(object):
+class Dfs:
 
-    max_depth_possible = 10
+    max_depth_possible = 8
     
     def __init__(self, initial_state, search_order):
         super().__init__()
@@ -29,6 +29,7 @@ class Dfs(object):
 
     # For every direction in search order generate new states using given state
     def generate_new_states(self, state, search_order):
+        to_reverse = []
         for direction in search_order:
             if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction):
                 new_state = Puzzle(state.current_state)
@@ -36,9 +37,14 @@ class Dfs(object):
                 new_state.depth = state.depth
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
-
-                self.to_be_visited.append(new_state)
+                to_reverse.append(new_state)
+              #  self.to_be_visited.append(new_state)
                 self.number_of_visited += 1
+        
+        to_reverse.reverse()
+        for single in to_reverse:
+            self.to_be_visited.append(single)
+
 
 
     def run_search(self):
@@ -70,15 +76,15 @@ class Dfs(object):
                     continue
 
                 # Check if given state was already visited using hash and dict
-                if hash(state_in_queue) in self.already_vistied:
+                if state_in_queue in self.already_vistied:
 
-                    if state_in_queue.depth >= self.already_vistied[hash(state_in_queue)].depth:
+                    if state_in_queue.depth >= self.already_vistied[state_in_queue].depth:
                         continue
                     else:
-                        del self.already_vistied[hash(state_in_queue)]
+                        del self.already_vistied[state_in_queue]
 
                 # Add new state to dict using hash of object, generate new states
-                self.already_vistied[hash(state_in_queue)] = state_in_queue
+                self.already_vistied[state_in_queue] = state_in_queue
                 self.generate_new_states(state_in_queue, self.search_order)
 
         self.number_of_processed = len(self.already_vistied)
