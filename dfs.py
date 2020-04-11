@@ -5,7 +5,7 @@ from puzzle import Puzzle
 
 class Dfs:
 
-    max_depth_possible = 8
+    max_depth_possible = 20
     
     def __init__(self, initial_state, search_order):
         super().__init__()
@@ -38,13 +38,11 @@ class Dfs:
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
                 to_reverse.append(new_state)
-              #  self.to_be_visited.append(new_state)
-                self.number_of_visited += 1
+                self.number_of_visited = self.number_of_visited + 1
         
         to_reverse.reverse()
         for single in to_reverse:
             self.to_be_visited.append(single)
-
 
 
     def run_search(self):
