@@ -13,7 +13,6 @@ class Dfs:
         # pop() for LIFO / append()
         self.to_be_visited = deque()
         self.already_vistied = {}
-        self.frontier_puzzles = {}
 
         self.to_be_visited.append(initial_state)
 
