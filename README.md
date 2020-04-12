@@ -42,3 +42,5 @@ pyhon main.py algorithm search_order/metric input_filename output_filename outpu
     * name of second output file
 
 Output files include such things like: length of solution, execution time, number of visited and processed nodes.
+
+plot_gen.py was only used to generate plots for educational purposes.
