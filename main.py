@@ -4,7 +4,6 @@ import numpy as np
 from puzzle import Puzzle
 from bfs import Bfs
 from dfs import Dfs
-# from dfsv2 import Dfs
 from astr import Astr
 
 # default values for height and width
@@ -24,7 +23,6 @@ Loaded state of puzzle: \n\n{}\n""".format(*args, loaded_puzzle))
 
 
 def load_initial_puzzle(filename):
-
     global puzzle_height, puzzle_width
 
     with open(filename, 'r') as f:
@@ -47,20 +45,7 @@ def save_final_data(result, solution_filename, additional_filename):
                 f.write(str(result[3]) + "\n")
                 f.write(str(result[1]) + "\n")
                 f.write(str(result[4]))
-
-        else:
-
-            with open(solution_filename + ".txt", 'w') as f:
-                f.write(str(len(result[0])) + "\n" + result[0])
-
-            with open(additional_filename + ".txt", 'w') as f:
-                f.write(str(len(result[0])) + "\n")
-                f.write(str(result[2]) + "\n")
-                f.write(str(result[2]) + "\n")
-                f.write(str(result[1]) + "\n")
-                f.write(str(result[3]))
-
-
+                
     else:
         with open(solution_filename + ".txt", 'w') as f:
             f.write("-1")
@@ -69,14 +54,12 @@ def save_final_data(result, solution_filename, additional_filename):
 
 
 def print_result(result):
-
     if "No solution found!" not in result:
-
         if len(result) == 5:
-            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nNumber of processed: {}\nExecution time: {} ms".format(*result))
+            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nNumber of processed: {}\nExecution time: {} ms"
+            .format(*result))
         else:
             print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nExecution time: {} ms".format(*result))
-    
     else:
         print("No solution found!")
 
@@ -121,7 +104,6 @@ def use_a_star(initial_state, heuristic, solution_filename, additional_filename)
 
 
 def choose_method(method, order, initial_state, solution_filename, additional_filename):
-
     switch_by_method = {
     'bfs': use_bfs,
     'dfs': use_dfs,
@@ -154,7 +136,6 @@ def main():
 
         first_state = Puzzle(initial_puzzle)
         choose_method(args[0], args[1], first_state, args[3], args[4])
-
 
 
 if __name__ == "__main__":

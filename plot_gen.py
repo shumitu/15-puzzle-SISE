@@ -5,7 +5,6 @@ import random
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-import multiprocessing as mp
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 from puzzle import Puzzle
@@ -19,19 +18,19 @@ direction_orders = ["rdul", "rdlu", "drul", "drlu", "ludr", "lurd", "uldr", "ulr
 heuristics = ["manh", "hamm"]
 colors = ["firebrick", "navy", "green", "darkorange", "black", "darkcyan", "lawngreen", "purple"]
 
-
+#Load initial puzzles from files
 def load_initial_puzzle(filename):
     return np.loadtxt("to_draw/" + filename, dtype=int, skiprows=1)  
 
-
+#Generate correct state for given size. Default variant is 4x4
 def generate_correct_state(height = 4, width = 4):
 
     correct = np.arange(1, height * width + 1).reshape(height, width)
     correct[height - 1][width - 1] = 0
     return correct
 
-
-def string_mean(result, separated,method="empty"):
+#Ugly function to calculate means of solutions in form of strings
+def string_mean(result, separated, method="empty"):
     if not separated:
         sum_of_str = [0 for _ in range(len(result))]
         no_of_elems = [0 for _ in range(len(result))]
@@ -47,7 +46,7 @@ def string_mean(result, separated,method="empty"):
         return averages
 
     else:
-        # create list of dictionaries and declare values for orders as lists or 0
+        # create list of dictionaries and declare values for orders or heuristics as lists or 0
         list_of_dicts = [{} for _ in range(len(result))]
         list_of_sums = [{} for _ in range(len(result))]
         list_of_elem_sums = [{} for _ in range(len(result))]
@@ -70,7 +69,7 @@ def string_mean(result, separated,method="empty"):
                 single_dict[order] = 0
     
 
-        # separate data via orders
+        # separate data via orders or heuristics
         for order in direction_orders if method == "empty" else heuristics:
             for i in range(len(result)):
                 for j in range(len(result[i])):
@@ -153,7 +152,6 @@ def other_mean(result, pos, separated, method = "empty"):
         return list_of_averages
 
 
-
 def draw_means_together(bfs, dfs, astr, variant):
 
     # set width of bar
@@ -220,13 +218,9 @@ def draw_means_together(bfs, dfs, astr, variant):
     plt.savefig("plots/" + filename, dpi=300)
 
 
-
 def draw_separated(plot_data, method, variant):
-    # set width of bar
 
     plt.clf()
-
-    # set height of bar
 
     if variant == 0:
         method_means = string_mean(plot_data, True,method) if method == "astr" else string_mean(plot_data, True)
@@ -259,10 +253,8 @@ def draw_separated(plot_data, method, variant):
         x_title = "A*" if method == "astr" else method.upper()
         if method == "dfs": plt.yscale("log", subsy=[2, 4, 6, 8])
 
-    
-    # Set position of bar on X axis
-
     if method == "astr":
+
         barWidth = 0.45
 
         r1 = np.arange(len(method_means))
@@ -275,6 +267,7 @@ def draw_separated(plot_data, method, variant):
         plt.xticks([r + barWidth / 2 for r in range(len(out_1))], labels)
 
     else:
+
         barWidth = 0.10
 
         r1 = np.arange(len(method_means))
@@ -311,15 +304,19 @@ def draw_separated(plot_data, method, variant):
     plt.xlabel("Głębokość", fontweight="bold")
     plt.ylabel(y_title, fontweight="bold")
     
-    
-    # Create legend & Show graphic
+    # Create legend and save plot to file
     plt.legend(ncol=2, fontsize="small")
     plt.savefig("plots/" + filename, dpi=300)
 
-
+# Simple functions which is used in multiprocessing
 def dfs_worker(single_list):
-    res_dfs = [(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ]
+    res_dfs = [(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list]
     return res_dfs
+
+
+def bfs_worker(single_list):
+    res_bfs = [(Bfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list]
+    return res_bfs
 
 
 def main():
@@ -343,45 +340,25 @@ def main():
     # for bfs
 
     start_time = time.perf_counter()
-
-    res_bfs = [[(Bfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_bfs]
-
-    # executors_list_bfs = []
-    # with ProcessPoolExecutor() as executor:
-    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[0]))
-    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[1]))
-    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[2]))
-    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[3]))
-    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[4]))
-    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[5]))
-    #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[6]))
-
+    executors_list_bfs = []
+    with ProcessPoolExecutor(max_workers = 3) as executor:
+        for i in range(len(list_for_dfs)):
+            executors_list_bfs.append(executor.submit(dfs_worker, list_for_dfs[i]))
     end_time = time.perf_counter()
+    res_bfs = [i.result() for i in executors_list_bfs]
     print("BFS generating time: ",round(end_time - start_time, 3), "s")
-
-    # res_bfs = [i.result() for i in executors_list_bfs]
 
     # for dfs
 
     start_time = time.perf_counter()
-    #res_dfs = [[(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_dfs]
-
     executors_list_dfs = []
     with ProcessPoolExecutor(max_workers = 3) as executor:
-        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[0]))
-        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[1]))
-        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[2]))
-        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[3]))
-        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[4]))
-        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[5]))
-        executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[6]))
-
+        for i in range(len(list_for_dfs)):
+            executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[i]))
     end_time = time.perf_counter()
-    print("DFS generating time: ",round(end_time - start_time, 3), "s" ,round((end_time - start_time) / 3600, 3), "h" )
-
     res_dfs = [i.result() for i in executors_list_dfs]
 
-    # print(res_dfs)
+    print("DFS generating time: ",round(end_time - start_time, 3), "s" ,round((end_time - start_time) / 3600, 3), "h" )
 
     # for astar, hamm with manh
 
@@ -390,7 +367,7 @@ def main():
     end_time = time.perf_counter()
     print("Astr generating time: ",round(end_time - start_time, 3), "s")
 
-    # CALCULATE AND PLOT SECTION
+    # Section for plots generating process
     """
     Solution length / Visited states / Processed states / Max depth / execution, together 20 graphs
     First graph: Means for BFS, DFS, Astar together
@@ -399,14 +376,9 @@ def main():
     Fourth graph: Means for Astar heuristics separated
     """
 
-    # DRAW MEANS FOR SOLUTION LENGTH TOGETHER
-    draw_means_together(res_bfs,res_dfs,res_astr, 0)
-    draw_means_together(res_bfs,res_dfs,res_astr, 1)
-    draw_means_together(res_bfs,res_dfs,res_astr, 2)
-    draw_means_together(res_bfs,res_dfs,res_astr, 3)
-    draw_means_together(res_bfs,res_dfs,res_astr, 4)
-
+    # Draw means plots for results together
     for i in range(5):
+        draw_means_together(res_bfs,res_dfs,res_astr, i)
         draw_separated(res_bfs, "bfs", i)
         draw_separated(res_dfs, "dfs", i)
         draw_separated(res_astr, "astr", i)
