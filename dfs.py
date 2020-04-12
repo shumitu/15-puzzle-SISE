@@ -13,6 +13,7 @@ class Dfs:
         # pop() for LIFO / append()
         self.to_be_visited = deque()
         self.already_vistied = {}
+        self.frontier_puzzles = {}
 
         self.to_be_visited.append(initial_state)
 
@@ -26,19 +27,22 @@ class Dfs:
         self.start_time = 0
         self.end_time = 0
 
+    def generate_hash(self, state):
+        return hash(state.current_state.tobytes())
+
 
     # For every direction in search order generate new states using given state
     def generate_new_states(self, state, search_order):
         to_reverse = []
         for direction in search_order:
-            if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction):
+            if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction) and state.depth < self.max_depth_possible:
                 new_state = Puzzle(state.current_state)
                 new_state.solution_string = state.solution_string
                 new_state.depth = state.depth
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
                 to_reverse.append(new_state)
-                self.number_of_visited = self.number_of_visited + 1
+                self.number_of_visited += 1
         
         to_reverse.reverse()
         for single in to_reverse:
@@ -74,15 +78,15 @@ class Dfs:
                     continue
 
                 # Check if given state was already visited using hash and dict
-                if state_in_queue in self.already_vistied:
+                if self.generate_hash(state_in_queue) in self.already_vistied:
 
-                    if state_in_queue.depth >= self.already_vistied[state_in_queue].depth:
+                    if state_in_queue.depth >= self.already_vistied[self.generate_hash(state_in_queue)]:
                         continue
                     else:
-                        del self.already_vistied[state_in_queue]
+                        del self.already_vistied[self.generate_hash(state_in_queue)]
 
                 # Add new state to dict using hash of object, generate new states
-                self.already_vistied[state_in_queue] = state_in_queue
+                self.already_vistied[self.generate_hash(state_in_queue)] = state_in_queue.depth
                 self.generate_new_states(state_in_queue, self.search_order)
 
         self.number_of_processed = len(self.already_vistied)
