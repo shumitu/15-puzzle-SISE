@@ -9,10 +9,10 @@ class Astr:
         super().__init__()
 
         self.heuristic = heuristic
-        self.to_be_visited = PriorityQueue()
-        self.already_vistied = deque()
+        self.frontier = PriorityQueue()
+        self.already_processed = deque()
 
-        self.to_be_visited.put((0, initial_state))
+        self.frontier.put((0, initial_state))
 
         self.result_string = ""
         self.max_depth = 0
@@ -61,7 +61,7 @@ class Astr:
 
 
     # Generate new states using given state
-    def generate_new_states(self, state, search_order = "lurd"):
+    def generate_new_states(self, state, search_order = "rdlu"):
         for direction in search_order:
             if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction):
                 new_state = Puzzle(state.current_state)
@@ -72,8 +72,8 @@ class Astr:
                 
                 # Calculate cost of movements and add this value with new state to priority queue
                 heuristic_val = new_state.depth + self.choose_heuristic(new_state, self.heuristic)
-                self.to_be_visited.put((heuristic_val, new_state))
-                self.number_of_processed += 1
+                self.frontier.put((heuristic_val, new_state))
+                self.number_of_visited += 1
                
 
     # Simple function to check if given state already exists
@@ -87,32 +87,30 @@ class Astr:
 
         solution_found = False
 
-        while self.to_be_visited:
+        while self.frontier:
 
             # Get state from priority queue for which value of priority is the lowest
             # Priority queue  returns tuple (priority, state), so we take [1] to get only state
-            state_in_queue = self.to_be_visited.get()[1]
+            state_in_queue = self.frontier.get()[1]
 
-            if self.already_vistied:
+            if self.already_processed:
 
-                if not self.check_if_new(self.already_vistied, state_in_queue):
-                    state_in_queue = self.to_be_visited.get()[1]
-                    self.number_of_processed += 1
-
-            if state_in_queue.depth > self.max_depth:
-                self.max_depth = state_in_queue.depth
+                if not self.check_if_new(self.already_processed, state_in_queue):
+                    state_in_queue = self.frontier.get()[1]
+                    self.number_of_visited += 1
 
             if state_in_queue.check_if_solved():
                 solution_found = True
                 self.result_string = state_in_queue.solution_string
                 self.max_depth = state_in_queue.depth
-                self.number_of_visited = len(self.already_vistied) + self.number_of_processed
+                self.number_of_visited = len(self.already_processed) + self.frontier.qsize()
+                self.number_of_processed = len(self.already_processed)
                 self.end_time = time.perf_counter()
                 break
 
             self.generate_new_states(state_in_queue)
 
-            self.already_vistied.append(state_in_queue)
+            self.already_processed.append(state_in_queue)
 
         return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if solution_found else "No solution found!"
         

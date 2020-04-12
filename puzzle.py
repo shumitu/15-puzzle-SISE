@@ -3,6 +3,7 @@ from collections import deque
 
 class Puzzle:
     
+    #for default: None, Int, Int
     correct_state = np.array([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,0]])
     puzzle_height = 4 
     puzzle_width = 4
@@ -20,16 +21,18 @@ class Puzzle:
         self.previous_direction = ""
         self.depth = 0 
 
+
     def __lt__(self, other):
         return self.depth < other.depth
 
-    def __le__(self,other):
+
+    def __le__(self, other):
         return not other.depth < self.depth
         
 
-
     def check_if_solved(self):
-        return (self.current_state == self.correct_state).all()
+        # return (self.current_state == self.correct_state).all()
+        return self.current_state.tobytes() == self.correct_state.tobytes()
 
         
     def check_if_move_possible(self, direction):
@@ -59,28 +62,36 @@ class Puzzle:
 
 
     def down(self):
-        self.current_state[self.zero_index[0]][self.zero_index[1]], self.current_state[self.zero_index[0] + 1][self.zero_index[1]] = self.current_state[self.zero_index[0] + 1][self.zero_index[1]], self.current_state[self.zero_index[0]][self.zero_index[1]]
+        self.current_state[self.zero_index[0]][self.zero_index[1]], self.current_state[self.zero_index[0] + 1][self.zero_index[1]] = (
+            self.current_state[self.zero_index[0] + 1][self.zero_index[1]], self.current_state[self.zero_index[0]][self.zero_index[1]])
+        
         self.zero_index[0] += 1
         self.solution_string += "d"
         self.depth += 1
 
 
     def up(self):
-        self.current_state[self.zero_index[0]][self.zero_index[1]], self.current_state[self.zero_index[0] - 1][self.zero_index[1]] = self.current_state[self.zero_index[0] - 1][self.zero_index[1]], self.current_state[self.zero_index[0]][self.zero_index[1]]
+        self.current_state[self.zero_index[0]][self.zero_index[1]], self.current_state[self.zero_index[0] - 1][self.zero_index[1]] = (
+            self.current_state[self.zero_index[0] - 1][self.zero_index[1]], self.current_state[self.zero_index[0]][self.zero_index[1]])
+
         self.zero_index[0] -= 1
         self.solution_string += "u"
         self.depth += 1
 
 
     def left(self):
-        self.current_state[self.zero_index[0]][self.zero_index[1]], self.current_state[self.zero_index[0]][self.zero_index[1] - 1] = self.current_state[self.zero_index[0]][self.zero_index[1] - 1], self.current_state[self.zero_index[0]][self.zero_index[1]]
+        self.current_state[self.zero_index[0]][self.zero_index[1]], self.current_state[self.zero_index[0]][self.zero_index[1] - 1] = (
+            self.current_state[self.zero_index[0]][self.zero_index[1] - 1], self.current_state[self.zero_index[0]][self.zero_index[1]])
+        
         self.zero_index[1] -= 1
         self.solution_string += "l"
         self.depth += 1
         
 
     def right(self):
-        self.current_state[self.zero_index[0]][self.zero_index[1]], self.current_state[self.zero_index[0]][self.zero_index[1] + 1] = self.current_state[self.zero_index[0]][self.zero_index[1] + 1], self.current_state[self.zero_index[0]][self.zero_index[1]]    
+        self.current_state[self.zero_index[0]][self.zero_index[1]], self.current_state[self.zero_index[0]][self.zero_index[1] + 1] = (
+            self.current_state[self.zero_index[0]][self.zero_index[1] + 1], self.current_state[self.zero_index[0]][self.zero_index[1]])
+                
         self.zero_index[1] += 1 
         self.solution_string += "r"
         self.depth += 1

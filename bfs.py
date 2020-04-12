@@ -8,10 +8,10 @@ class Bfs:
         super().__init__()
 
         # popleft() for FIFO / append()
-        self.to_be_visited = deque()
+        self.frontier = deque()
         self.already_processed = deque()
 
-        self.to_be_visited.append(initial_state)
+        self.frontier.append(initial_state)
         self.search_order = search_order
 
         self.result_string = ""
@@ -34,7 +34,7 @@ class Bfs:
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
                 #Add new state to queue
-                self.to_be_visited.append(new_state)
+                self.frontier.append(new_state)
 
 
     def run_search(self):
@@ -43,10 +43,10 @@ class Bfs:
 
         solution_found = False
 
-        while self.to_be_visited:
+        while self.frontier:
 
             # Get first element from queue, FIFO order
-            state_in_queue = self.to_be_visited.popleft()
+            state_in_queue = self.frontier.popleft()
             self.already_processed.append(state_in_queue)
 
             # If current state of puzzle is correct, break loop and return result string and additional data
@@ -54,7 +54,7 @@ class Bfs:
                 solution_found = True
                 self.result_string = state_in_queue.solution_string
                 self.max_depth = state_in_queue.depth
-                self.number_of_visited = len(self.to_be_visited) + len(self.already_processed)
+                self.number_of_visited = len(self.frontier) + len(self.already_processed)
                 self.number_of_processed = len(self.already_processed)
                 self.end_time = time.perf_counter()
                 break
