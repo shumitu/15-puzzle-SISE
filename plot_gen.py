@@ -17,7 +17,7 @@ from astr import Astr
 labels = ["1", "2", "3", "4", "5", "6", "7"]
 direction_orders = ["rdul", "rdlu", "drul", "drlu", "ludr", "lurd", "uldr", "ulrd"]
 heuristics = ["manh", "hamm"]
-colors = [(random.random(), random.random(), random.random()) for i in range(8)]
+colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in range(8)]
 
 
 def load_initial_puzzle(filename):
@@ -377,7 +377,7 @@ def main():
         executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[6]))
 
     end_time = time.perf_counter()
-    print("DFS generating time: ",round(end_time - start_time, 3), " s")
+    print("DFS generating time: ",round(end_time - start_time, 3), " s" ,round((end_time - start_time) / 3600, 3), " h" )
 
     res_dfs = [i.result() for i in executors_list_dfs]
 
