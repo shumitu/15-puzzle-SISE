@@ -17,7 +17,7 @@ from astr import Astr
 labels = ["1", "2", "3", "4", "5", "6", "7"]
 direction_orders = ["rdul", "rdlu", "drul", "drlu", "ludr", "lurd", "uldr", "ulrd"]
 heuristics = ["manh", "hamm"]
-colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in range(8)]
+colors = ["firebrick", "navy", "green", "darkorange", "black", "darkcyan", "lawngreen", "purple"]
 
 
 def load_initial_puzzle(filename):
@@ -357,7 +357,7 @@ def main():
     #     executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[6]))
 
     end_time = time.perf_counter()
-    print("BFS generating time: ",round(end_time - start_time, 3), " s")
+    print("BFS generating time: ",round(end_time - start_time, 3), "s")
 
     # res_bfs = [i.result() for i in executors_list_bfs]
 
@@ -367,7 +367,7 @@ def main():
     #res_dfs = [[(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_dfs]
 
     executors_list_dfs = []
-    with ProcessPoolExecutor(max_workers = 4) as executor:
+    with ProcessPoolExecutor(max_workers = 3) as executor:
         executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[0]))
         executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[1]))
         executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[2]))
@@ -377,7 +377,7 @@ def main():
         executors_list_dfs.append(executor.submit(dfs_worker, list_for_dfs[6]))
 
     end_time = time.perf_counter()
-    print("DFS generating time: ",round(end_time - start_time, 3), " s" ,round((end_time - start_time) / 3600, 3), " h" )
+    print("DFS generating time: ",round(end_time - start_time, 3), "s" ,round((end_time - start_time) / 3600, 3), "h" )
 
     res_dfs = [i.result() for i in executors_list_dfs]
 
@@ -388,7 +388,7 @@ def main():
     start_time = time.perf_counter()
     res_astr = [[(Astr(single_state, heuristic).run_search(), heuristic) for heuristic in heuristics for single_state in single_list ] for single_list in list_for_astr_manh]
     end_time = time.perf_counter()
-    print("Astr generating time: ",round(end_time - start_time, 3), " s")
+    print("Astr generating time: ",round(end_time - start_time, 3), "s")
 
     # CALCULATE AND PLOT SECTION
     """
