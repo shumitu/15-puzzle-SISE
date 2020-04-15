@@ -44,3 +44,32 @@ pyhon main.py algorithm search_order/metric input_filename output_filename outpu
 Output files include such things like: length of solution, execution time, number of visited and processed nodes.
 
 plot_gen.py was only used to generate plots for educational purposes.
+
+## Output example
+
+Usage and example of output is shown below.
+
+```bash
+python main.py bfs rdlu 4x4_07_00191.txt first second
+
+Initial arguments list:
+Strategy: bfs
+Search order or heuristic: rdlu
+Input filename: 4x4_07_00191.txt
+Output filename: first
+Additional filename: second
+Loaded state of puzzle:
+
+[[ 1  0  3  4]
+ [ 5  2  6  8]
+ [ 9 11  7 12]
+ [13 10 14 15]]
+
+Solution string: drdldrr
+Max depth: 7
+Number of visited: 810
+Number of processed: 378
+Execution time: 31.136 ms
+```
+
+As you can see, we have all output information in console. There is no need to use output files.
