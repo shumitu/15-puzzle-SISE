@@ -5,7 +5,8 @@ from puzzle import Puzzle
 
 class Dfs:
 
-    max_depth_possible = 8
+    #Default value for university classess
+    max_depth_possible = 20
     
     def __init__(self, initial_state, search_order):
         super().__init__()
@@ -13,7 +14,8 @@ class Dfs:
         # pop() for LIFO / append()
         self.frontier = deque()
         self.already_processed = {}
-
+        
+        # Add first state to frontier
         self.frontier.append(initial_state)
 
         self.search_order = search_order
@@ -22,9 +24,13 @@ class Dfs:
         self.number_of_visited = 0
         self.number_of_processed = 0
 
+        self.solution_found = False
+
         self.start_time = 0
         self.end_time = 0
 
+
+    # Function to generate hash of puzzle for given state
     def generate_hash(self, state):
         return hash(state.current_state.tobytes())
 
@@ -33,61 +39,56 @@ class Dfs:
     def generate_new_states(self, state, search_order):
         to_reverse = []
         for direction in search_order:
+
+            # Check if move is possible in given direction and if depth is lower than max possible depth
             if state.check_if_move_possible(direction) and state.check_if_not_reversed(direction) and state.depth < self.max_depth_possible:
                 new_state = Puzzle(state.current_state)
                 new_state.solution_string = state.solution_string
                 new_state.depth = state.depth
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
-                to_reverse.append(new_state)
+
+                # If new state is solved, we set params and flag to true
+                if new_state.check_if_solved():
+                    self.result_string = new_state.solution_string
+                    self.max_depth = new_state.depth
+                    self.end_time = time.perf_counter()
+                    self.solution_found = True
+
+                else:
+                    to_reverse.append(new_state)
         
         to_reverse.reverse()
         for single in to_reverse:
             self.frontier.append(single)
+            self.number_of_visited += 1
 
 
     def run_search(self):
         
         self.start_time = time.perf_counter()
-
-        solution_found = False
     
-        while self.frontier:
+        while self.frontier and not self.solution_found:
 
             # Get first element from queue, LIFO order
             state_in_queue = self.frontier.pop()
 
-            # If current state of puzzle is correct, return result string and additional data
-            if state_in_queue.check_if_solved():
-                solution_found = True
-                self.result_string = state_in_queue.solution_string
-                self.max_depth = state_in_queue.depth
-                self.number_of_visited = len(self.frontier) + len(self.already_processed)
-                self.number_of_processed = len(self.already_processed)
-                self.end_time = time.perf_counter()
-                break
+            if state_in_queue.depth > self.max_depth_possible:
+                continue
 
-            else:
+            # Check if given state was already visited using hash and dict
+            if self.generate_hash(state_in_queue) in self.already_processed:
 
-                if state_in_queue.depth > self.max_depth_possible:
+                if state_in_queue.depth >= self.already_processed[self.generate_hash(state_in_queue)]:
                     continue
 
-                # Check if given state was already visited using hash and dict
-                if self.generate_hash(state_in_queue) in self.already_processed:
-
-                    if state_in_queue.depth >= self.already_processed[self.generate_hash(state_in_queue)]:
-                        continue
-                    else:
-                        del self.already_processed[self.generate_hash(state_in_queue)]
-
-                # Add new state to dict using hash of object, generate new states
-                self.already_processed[self.generate_hash(state_in_queue)] = state_in_queue.depth
-                self.generate_new_states(state_in_queue, self.search_order)
-
-
+            # Add new state to dict using hash of object, generate new states
+            self.generate_new_states(state_in_queue, self.search_order)
+            self.already_processed[self.generate_hash(state_in_queue)] = state_in_queue.depth
+            self.number_of_processed += 1
 
         # If result was found return result string and other elements
-        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if solution_found else "No solution found!"
+        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if self.solution_found else "No solution found!"
                 
         
 

@@ -10,13 +10,15 @@ class Astr:
 
         self.heuristic = heuristic
         self.frontier = PriorityQueue()
-        self.already_processed = deque()
+        self.already_processed = {}
 
         self.frontier.put((0, initial_state))
 
+        self.solution_found = False
+
         self.result_string = ""
         self.max_depth = 0
-        self.number_of_visited = 0
+        self.number_of_visited = 1
         self.number_of_processed = 0
 
         self.start_time = 0
@@ -69,50 +71,44 @@ class Astr:
                 new_state.depth = state.depth
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
-                
-                # Calculate cost of movements and add this value with new state to priority queue
-                heuristic_val = new_state.depth + self.choose_heuristic(new_state, self.heuristic)
-                self.frontier.put((heuristic_val, new_state))
-                self.number_of_visited += 1
+
+                if new_state.check_if_solved():
+                    self.result_string = new_state.solution_string
+                    self.max_depth = new_state.depth
+                    self.end_time = time.perf_counter()
+                    self.solution_found = True
+
+                else:  
+                    # Calculate cost of movements and add this value with new state to priority queue
+                    heuristic_val = new_state.depth + self.choose_heuristic(new_state, self.heuristic)
+                    self.frontier.put((heuristic_val, new_state))
+                    self.number_of_visited += 1
                
 
-    # Simple function to check if given state already exists
-    def check_if_new(self, states, state_to_check):
-        return False if state_to_check in states else True
+    # Function to generate hash of puzzle for given state
+    def generate_hash(self, state):
+        return hash(state.current_state.tobytes())
 
 
     def run_search(self):
         
         self.start_time = time.perf_counter()
 
-        solution_found = False
-
-        while self.frontier:
+        while self.frontier and not self.solution_found:
 
             # Get state from priority queue for which value of priority is the lowest
             # Priority queue  returns tuple (priority, state), so we take [1] to get only state
             state_in_queue = self.frontier.get()[1]
 
-            if self.already_processed:
-
-                if not self.check_if_new(self.already_processed, state_in_queue):
-                    state_in_queue = self.frontier.get()[1]
-                    self.number_of_visited += 1
-
-            if state_in_queue.check_if_solved():
-                solution_found = True
-                self.result_string = state_in_queue.solution_string
-                self.max_depth = state_in_queue.depth
-                self.number_of_visited = len(self.already_processed) + self.frontier.qsize()
-                self.number_of_processed = len(self.already_processed)
-                self.end_time = time.perf_counter()
-                break
+            if self.generate_hash(state_in_queue) in self.already_processed:
+                state_in_queue = self.frontier.get()[1]
+                self.number_of_visited += 1
 
             self.generate_new_states(state_in_queue)
+            self.already_processed[self.generate_hash(state_in_queue)] = state_in_queue.depth
+            self.number_of_processed += 1
 
-            self.already_processed.append(state_in_queue)
-
-        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if solution_found else "No solution found!"
+        return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if self.solution_found else "No solution found!"
         
 
 

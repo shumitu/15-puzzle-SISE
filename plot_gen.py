@@ -180,6 +180,7 @@ def draw_means_together(bfs, dfs, astr, variant):
         astar_means = other_mean(astr, 2, False)
         filename = "mean_together_number_visited.png"
         y_title = "Średnia liczba odwiedzonych stanów"
+        plt.yscale("log", subsy=[2, 4, 6, 8])
 
     if variant == 3:
         bfs_means = other_mean(bfs, 3, False)
@@ -187,6 +188,7 @@ def draw_means_together(bfs, dfs, astr, variant):
         astar_means = other_mean(astr, 3, False)
         filename = "mean_together_number_processed.png"
         y_title = "Średnia liczba przetworzonych stanów"
+        plt.yscale("log", subsy=[2, 4, 6, 8])
 
     if variant == 4:
         bfs_means = other_mean(bfs, 4, False)
@@ -239,12 +241,14 @@ def draw_separated(plot_data, method, variant):
         filename = "mean_" + method + "_separated_number_visited.png"
         y_title = "Średnia liczba odwiedzonych stanów"
         x_title = "A*" if method == "astr" else method.upper()
+        if method == "dfs": plt.yscale("log", subsy=[2, 4, 6, 8])
 
     if variant == 3:
         method_means = other_mean(plot_data, 3, True,method) if method == "astr" else other_mean(plot_data, 3, True)
         filename = "mean_" + method + "_separated_number_processed.png"
         y_title = "Średnia liczba przetworzonych stanów"
         x_title = "A*" if method == "astr" else method.upper()
+        if method == "dfs": plt.yscale("log", subsy=[2, 4, 6, 8])
 
     if variant == 4:
         method_means = other_mean(plot_data, 4, True,method) if method == "astr" else other_mean(plot_data, 4, True)
