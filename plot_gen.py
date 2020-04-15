@@ -347,7 +347,7 @@ def main():
     executors_list_bfs = []
     with ProcessPoolExecutor(max_workers = 3) as executor:
         for i in range(len(list_for_dfs)):
-            executors_list_bfs.append(executor.submit(dfs_worker, list_for_dfs[i]))
+            executors_list_bfs.append(executor.submit(dfs_worker, list_for_bfs[i]))
     end_time = time.perf_counter()
     res_bfs = [i.result() for i in executors_list_bfs]
     print("BFS generating time: ",round(end_time - start_time, 3), "s")
