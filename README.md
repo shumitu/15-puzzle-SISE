@@ -43,7 +43,7 @@ pyhon main.py algorithm search_order/metric input_filename output_filename outpu
 
 Output files include such things like: length of solution, execution time, number of visited and processed nodes.
 
-plot_gen.py was only used to generate plots for educational purposes.
+plot_gen.py was only used for educational purposes and making plots for my classes. Content of this file should not be considered as example of good coding practices.
 
 ## Output example
 
