@@ -11,7 +11,6 @@ puzzle_width = puzzle_height = 4
 
 
 def print_initial_info(args, loaded_puzzle):
-
     print("""
 Initial arguments list:
 Strategy: {}
@@ -32,20 +31,18 @@ def load_initial_puzzle(filename):
 
 
 def save_final_data(result, solution_filename, additional_filename):
-
     if "No solution found!" not in result:
-        if len(result) == 5:
-    
-            with open(solution_filename + ".txt", 'w') as f:
-                f.write(str(len(result[0])) + "\n" + result[0])
 
-            with open(additional_filename + ".txt", 'w') as f:
-                f.write(str(len(result[0])) + "\n")
-                f.write(str(result[2]) + "\n")
-                f.write(str(result[3]) + "\n")
-                f.write(str(result[1]) + "\n")
-                f.write(str(result[4]))
-                
+        with open(solution_filename + ".txt", 'w') as f:
+            f.write(str(len(result[0])) + "\n" + result[0])
+
+        with open(additional_filename + ".txt", 'w') as f:
+            f.write(str(len(result[0])) + "\n")
+            f.write(str(result[2]) + "\n")
+            f.write(str(result[3]) + "\n")
+            f.write(str(result[1]) + "\n")
+            f.write(str(result[4]))
+            
     else:
         with open(solution_filename + ".txt", 'w') as f:
             f.write("-1")
@@ -55,25 +52,12 @@ def save_final_data(result, solution_filename, additional_filename):
 
 def print_result(result):
     if "No solution found!" not in result:
-        if len(result) == 5:
-            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nNumber of processed: {}\nExecution time: {} ms"
-            .format(*result))
-        else:
-            print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nExecution time: {} ms".format(*result))
+        print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nNumber of processed: {}\nExecution time: {} ms".format(*result))
     else:
         print("No solution found!")
 
-        
-
-def generate_correct_state(height, width):
-
-    correct = np.arange(1, height * width + 1).reshape(height, width)
-    correct[height - 1][width - 1] = 0
-    return correct
-
 
 def use_bfs(initial_state, order, solution_filename, additional_filename):
-    
     bfs = Bfs(initial_state, order)
     result = bfs.run_search()
     
@@ -83,7 +67,6 @@ def use_bfs(initial_state, order, solution_filename, additional_filename):
 
 
 def use_dfs(initial_state, order, solution_filename, additional_filename):
-
     dfs = Dfs(initial_state, order)
     result = dfs.run_search()
 
@@ -93,7 +76,6 @@ def use_dfs(initial_state, order, solution_filename, additional_filename):
 
 
 def use_a_star(initial_state, heuristic, solution_filename, additional_filename):
-    
     a_star = Astr(initial_state, heuristic)
     result = a_star.run_search()
 
@@ -130,9 +112,8 @@ def main():
     else:
         initial_puzzle = load_initial_puzzle(args[2])
         print_initial_info(args, initial_puzzle)
-        correct_puzzle = generate_correct_state(puzzle_height, puzzle_width)
         
-        Puzzle.correct_state, Puzzle.puzzle_height, Puzzle.puzzle_width = correct_puzzle, puzzle_height, puzzle_width
+        Puzzle.puzzle_height, Puzzle.puzzle_width = puzzle_height, puzzle_width
 
         first_state = Puzzle(initial_puzzle)
         choose_method(args[0], args[1], first_state, args[3], args[4])

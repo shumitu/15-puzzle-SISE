@@ -5,8 +5,6 @@ from puzzle import Puzzle
 
 class Bfs:
     def __init__(self, initial_state, search_order):
-        super().__init__()
-
         # popleft() for FIFO / append()
         self.frontier = deque()
         self.already_processed = deque()

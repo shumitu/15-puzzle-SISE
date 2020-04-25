@@ -9,8 +9,6 @@ class Dfs:
     max_depth_possible = 20
     
     def __init__(self, initial_state, search_order):
-        super().__init__()
-
         # pop() for LIFO / append()
         self.frontier = deque()
         self.already_processed = {}

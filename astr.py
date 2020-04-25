@@ -6,8 +6,6 @@ from puzzle import Puzzle
 
 class Astr:
     def __init__(self, initial_state, heuristic):
-        super().__init__()
-
         self.heuristic = heuristic
         self.frontier = PriorityQueue()
         self.already_processed = {}

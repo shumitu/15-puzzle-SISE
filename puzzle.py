@@ -9,8 +9,6 @@ class Puzzle:
     puzzle_width = 4
 
     def __init__(self, current_state):
-        super().__init__()
-
         self.current_state = np.copy(current_state)
 
         # return tuple (y, x)
