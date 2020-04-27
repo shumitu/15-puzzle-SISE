@@ -5,7 +5,7 @@ from puzzle import Puzzle
 
 class Dfs:
 
-    #Default value for university classess
+    #Default value for university classes
     max_depth_possible = 20
     
     def __init__(self, initial_state, search_order):
@@ -71,12 +71,8 @@ class Dfs:
             # Get first element from queue, LIFO order
             state_in_queue = self.frontier.pop()
 
-            if state_in_queue.depth > self.max_depth_possible:
-                continue
-
             # Check if given state was already visited using hash and dict
             if self.generate_hash(state_in_queue) in self.already_processed:
-
                 if state_in_queue.depth >= self.already_processed[self.generate_hash(state_in_queue)]:
                     continue
 
