@@ -39,7 +39,7 @@ class Astr:
         distance = 0
         for i in range(Puzzle.puzzle_width):
             for j in range(Puzzle.puzzle_height):
-                val = state.current_state[i][j]
+                val = state.current_state[i][j] # i - row, j - column
                 if val != 0:
                     val -= 1
                     new_x = val % Puzzle.puzzle_width
@@ -56,8 +56,8 @@ class Astr:
             "manh": self.manhattan_dist,
             "hamm": self.hamming_dist
         }
-        result = switch_by_heuristic.get(heuristic.lower(), "Wrong heuristic!")
-        return result(state)
+        result = switch_by_heuristic.get(heuristic.lower(), "Wrong heuristic!") 
+        return result(state) if type(result) is not str else print(result)
 
 
     # Generate new states using given state

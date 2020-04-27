@@ -29,7 +29,6 @@ class Puzzle:
         
 
     def check_if_solved(self):
-        # return (self.current_state == self.correct_state).all()
         return self.current_state.tobytes() == self.correct_state.tobytes()
 
         
@@ -103,4 +102,4 @@ class Puzzle:
             'r': self.right
         }
         result = switch_by_direction.get(direction.lower(), "Wrong direction!")
-        return result()
+        return result() if type(result) is not str else print(result)

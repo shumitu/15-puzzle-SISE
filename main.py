@@ -92,7 +92,7 @@ def choose_method(method, order, initial_state, solution_filename, additional_fi
     'astr': use_a_star
     }
     method_to_use = switch_by_method.get(method.lower(), "Wrong method!")
-    return method_to_use(initial_state, order.lower(), solution_filename, additional_filename)
+    return method_to_use(initial_state, order.lower(), solution_filename, additional_filename) if type(method_to_use) is not str else print(method_to_use)
 
 
 def main():
@@ -107,9 +107,7 @@ def main():
 
     args = sys.argv[1:]
 
-    if len(args) != 5:
-        raise ValueError("Parsed amount of args is equal {}, missing arguments!".format(len(args)))
-    else:
+    if len(args) == 5:
         initial_puzzle = load_initial_puzzle(args[2])
         print_initial_info(args, initial_puzzle)
         
@@ -117,6 +115,9 @@ def main():
 
         first_state = Puzzle(initial_puzzle)
         choose_method(args[0], args[1], first_state, args[3], args[4])
+
+    else:
+        print("Wrong number of arguments!")
 
 
 if __name__ == "__main__":
