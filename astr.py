@@ -51,6 +51,7 @@ class Astr:
         return distance
 
 
+    # Function which acts like switch ... case
     def choose_heuristic(self, state, heuristic):
         switch_by_heuristic = {
             "manh": self.manhattan_dist,

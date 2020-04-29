@@ -53,11 +53,11 @@ class Bfs:
 
             # Get first element from queue, FIFO order
             state_in_queue = self.frontier.popleft()
-            self.already_processed.append(state_in_queue)
-            self.number_of_processed += 1
 
             # Generate new states using current state and given search order, e.g. LRUD
             self.generate_new_states(state_in_queue, self.search_order)
+            self.already_processed.append(state_in_queue)
+            self.number_of_processed += 1
 
         # If result was found return result string and other elements
         return self.result_string, self.max_depth, self.number_of_visited, self.number_of_processed, round((self.end_time - self.start_time) * 1000, 3) if self.solution_found else "No solution found!"

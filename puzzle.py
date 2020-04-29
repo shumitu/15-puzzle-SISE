@@ -3,7 +3,7 @@ from collections import deque
 
 class Puzzle:
     
-    #for default: None, Int, Int
+    #Default values for 4x4 puzzle
     correct_state = np.array([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,0]])
     puzzle_height = 4 
     puzzle_width = 4
@@ -31,7 +31,8 @@ class Puzzle:
     def check_if_solved(self):
         return self.current_state.tobytes() == self.correct_state.tobytes()
 
-        
+    
+    # Function which check if move in given direction is possible
     def check_if_move_possible(self, direction):
         if direction not in 'urdl':
             return False
@@ -46,6 +47,7 @@ class Puzzle:
         return True
 
 
+    # Function which check if given direction is not opposite to previous direction
     def check_if_not_reversed(self, direction):
         if self.previous_direction == 'u' and direction == 'd':
             return False
@@ -94,6 +96,7 @@ class Puzzle:
         self.depth += 1
 
 
+    # Function which acts like switch ... case
     def make_move(self,direction):
         switch_by_direction = {
             'd': self.down,

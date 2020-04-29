@@ -6,10 +6,10 @@ from bfs import Bfs
 from dfs import Dfs
 from astr import Astr
 
-# default values for height and width
+# Default values for height and width
 puzzle_width = puzzle_height = 4
 
-
+# Function which print initial info from args and loaded file
 def print_initial_info(args, loaded_puzzle):
     print("""
 Initial arguments list:
@@ -21,6 +21,7 @@ Additional filename: {}
 Loaded state of puzzle: \n\n{}\n""".format(*args, loaded_puzzle))
 
 
+# Function which load initial state from given input file
 def load_initial_puzzle(filename):
     global puzzle_height, puzzle_width
 
@@ -30,6 +31,14 @@ def load_initial_puzzle(filename):
     return np.loadtxt(filename, dtype=int, skiprows=1)
 
 
+# Function which will generate correct state if given input state is not 4x4
+def generate_correct_state(height, width):
+    correct_state = np.arange(1, height * width + 1).reshape(height, width)
+    correct_state[height - 1][width - 1] = 0
+    return correct_state
+
+
+# Function which save result to files
 def save_final_data(result, solution_filename, additional_filename):
     if "No solution found!" not in result:
 
@@ -50,6 +59,7 @@ def save_final_data(result, solution_filename, additional_filename):
             f.write("-1")
 
 
+# Simple function which print result to console
 def print_result(result):
     if "No solution found!" not in result:
         print("Solution string: {}\nMax depth: {}\nNumber of visited: {}\nNumber of processed: {}\nExecution time: {} ms".format(*result))
@@ -57,6 +67,7 @@ def print_result(result):
         print("No solution found!")
 
 
+# Function for BFS
 def use_bfs(initial_state, order, solution_filename, additional_filename):
     bfs = Bfs(initial_state, order)
     result = bfs.run_search()
@@ -66,6 +77,7 @@ def use_bfs(initial_state, order, solution_filename, additional_filename):
     save_final_data(result, solution_filename, additional_filename)
 
 
+# Function for DFS
 def use_dfs(initial_state, order, solution_filename, additional_filename):
     dfs = Dfs(initial_state, order)
     result = dfs.run_search()
@@ -75,6 +87,7 @@ def use_dfs(initial_state, order, solution_filename, additional_filename):
     save_final_data(result, solution_filename, additional_filename)
 
 
+# Function for A*
 def use_a_star(initial_state, heuristic, solution_filename, additional_filename):
     a_star = Astr(initial_state, heuristic)
     result = a_star.run_search()
@@ -84,7 +97,7 @@ def use_a_star(initial_state, heuristic, solution_filename, additional_filename)
     save_final_data(result, solution_filename, additional_filename)
 
 
-
+# Function which acts like switch ... case
 def choose_method(method, order, initial_state, solution_filename, additional_filename):
     switch_by_method = {
     'bfs': use_bfs,
@@ -110,8 +123,11 @@ def main():
     if len(args) == 5:
         initial_puzzle = load_initial_puzzle(args[2])
         print_initial_info(args, initial_puzzle)
+
+        if puzzle_height != 4 or puzzle_width != 4:
+            correct_puzzle = generate_correct_state(puzzle_height, puzzle_width)
         
-        Puzzle.puzzle_height, Puzzle.puzzle_width = puzzle_height, puzzle_width
+        Puzzle.correct_state, Puzzle.puzzle_height, Puzzle.puzzle_width = correct_puzzle, puzzle_height, puzzle_width
 
         first_state = Puzzle(initial_puzzle)
         choose_method(args[0], args[1], first_state, args[3], args[4])
