@@ -126,8 +126,7 @@ def main():
 
         if puzzle_height != 4 or puzzle_width != 4:
             correct_puzzle = generate_correct_state(puzzle_height, puzzle_width)
-        
-        Puzzle.correct_state, Puzzle.puzzle_height, Puzzle.puzzle_width = correct_puzzle, puzzle_height, puzzle_width
+            Puzzle.correct_state, Puzzle.puzzle_height, Puzzle.puzzle_width = correct_puzzle, puzzle_height, puzzle_width
 
         first_state = Puzzle(initial_puzzle)
         choose_method(args[0], args[1], first_state, args[3], args[4])

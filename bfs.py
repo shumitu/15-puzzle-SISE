@@ -32,11 +32,12 @@ class Bfs:
                 new_state.depth = state.depth
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
+                if new_state.depth > self.max_depth:
+                    self.max_depth = new_state.depth
         
                 # If new state is solved, we set params and flag to true
                 if new_state.check_if_solved():
                     self.result_string = new_state.solution_string
-                    self.max_depth = new_state.depth
                     self.end_time = time.perf_counter()
                     self.solution_found = True
 

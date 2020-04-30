@@ -36,6 +36,9 @@ class Dfs:
     # For every direction in search order generate new states using given state
     def generate_new_states(self, state, search_order):
         to_reverse = []
+        if state.depth > self.max_depth:
+                    self.max_depth = state.depth
+
         for direction in search_order:
 
             # Check if move is possible in given direction and if depth is lower than max possible depth
@@ -46,10 +49,12 @@ class Dfs:
                 new_state.previous_direction = direction
                 new_state.make_move(direction)
 
+                if new_state.depth > self.max_depth:
+                    self.max_depth = new_state.depth
+
                 # If new state is solved, we set params and flag to true
                 if new_state.check_if_solved():
                     self.result_string = new_state.solution_string
-                    self.max_depth = new_state.depth
                     self.end_time = time.perf_counter()
                     self.solution_found = True
 

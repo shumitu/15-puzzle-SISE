@@ -308,7 +308,7 @@ def draw_separated(plot_data, method, variant):
 
 # Simple functions which is used in multiprocessing
 def dfs_worker(single_list):
-    res_dfs = [(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list]
+    res_dfs = [(Dfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list if "No solution found!" not in Dfs(single_state, order).run_search()]
     return res_dfs
 
 
@@ -338,7 +338,7 @@ def main():
     # for bfs
 
     start_time = time.perf_counter()
-    res_bfs = [[(Bfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list ] for single_list in list_for_bfs]
+    res_bfs = [[(Bfs(single_state, order).run_search(), order) for order in direction_orders for single_state in single_list if "No solution found!" not in Bfs(single_state, order).run_search()] for single_list in list_for_bfs]
     end_time = time.perf_counter()
     print("BFS generating time: ",round(end_time - start_time, 3), "s")
 
@@ -357,7 +357,7 @@ def main():
     # for astar, hamm with manh
 
     start_time = time.perf_counter()
-    res_astr = [[(Astr(single_state, heuristic).run_search(), heuristic) for heuristic in heuristics for single_state in single_list ] for single_list in list_for_astr_manh]
+    res_astr = [[(Astr(single_state, heuristic).run_search(), heuristic) for heuristic in heuristics for single_state in single_list if "No solution found!" not in Astr(single_state, heuristic).run_search()] for single_list in list_for_astr_manh]
     end_time = time.perf_counter()
     print("Astr generating time: ",round(end_time - start_time, 3), "s")
 
