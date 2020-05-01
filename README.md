@@ -25,7 +25,10 @@ Where numbers in first line are puzzle's height and puzzle's width.
 ```bash
 pyhon main.py algorithm search_order/metric input_filename output_filename output_filename_2
 ```
-
+* **algorithm**
+    * bfs - for BFS
+    * dfs - for DFS
+    * astr - for A*
 * **search_order (permutation of 4 letters)**
     * ldur
     * drul
